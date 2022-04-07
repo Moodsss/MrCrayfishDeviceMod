@@ -6,6 +6,7 @@ import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.block.BlockPaper;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.tileentity.TileEntityPaper;
+import moodss.util.math.vec.Vector3f;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -32,8 +33,8 @@ public class PaperRenderer extends TileEntitySpecialRenderer<TileEntityPaper>
             GlStateManager.translate(0.5, 0.5, 0.5);
             IBlockState state = te.getWorld().getBlockState(te.getPos());
             if(state.getBlock() != DeviceBlocks.PAPER) return;
-            GlStateManager.rotate(state.getValue(BlockPaper.FACING).getHorizontalIndex() * -90F + 180F, 0, 1, 0);
-            GlStateManager.rotate(-te.getRotation(), 0, 0, 1);
+            GlStateManager.rotate(Vector3f.YP.rotationDegrees(state.getValue(BlockPaper.FACING).getHorizontalIndex() * -90F + 180F));
+            GlStateManager.rotate(Vector3f.ZP.rotationDegrees(-te.getRotation()));
             GlStateManager.translate(-0.5, -0.5, -0.5);
 
             IPrint print = te.getPrint();

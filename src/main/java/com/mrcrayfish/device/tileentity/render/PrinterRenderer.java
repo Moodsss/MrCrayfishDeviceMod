@@ -6,6 +6,7 @@ import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.block.BlockPrinter;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
+import moodss.util.math.vec.Vector3f;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -42,8 +43,8 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.translate(0.5, 0.5, 0.5);
-                    GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
-                    GlStateManager.rotate(22.5F, 1, 0, 0);
+                    GlStateManager.rotate(Vector3f.YP.rotationDegrees(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F));
+                    GlStateManager.rotate(Vector3f.XP.rotationDegrees(22.5F));
                     GlStateManager.translate(0, 0, 0.4);
                     GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
@@ -56,8 +57,8 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                 if(te.isLoading())
                 {
                     GlStateManager.translate(0.5, 0.5, 0.5);
-                    GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
-                    GlStateManager.rotate(22.5F, 1, 0, 0);
+                    GlStateManager.rotate(Vector3f.YP.rotationDegrees(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F));
+                    GlStateManager.rotate(Vector3f.XP.rotationDegrees(22.5F));
                     double progress = Math.max(-0.4, -0.4 + (0.4 * ((double) (te.getRemainingPrintTime() - 10) / 20)));
                     GlStateManager.translate(0, progress, 0.36875);
                     GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
@@ -66,8 +67,8 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                 else if(te.isPrinting())
                 {
                     GlStateManager.translate(0.5, 0.078125, 0.5);
-                    GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
-                    GlStateManager.rotate(90F, 1, 0, 0);
+                    GlStateManager.rotate(Vector3f.YP.rotationDegrees(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F));
+                    GlStateManager.rotate(Vector3f.XP.rotationDegrees(22.5F));
                     double progress = -0.35 + (0.50 * ((double) (te.getRemainingPrintTime() - 20) / te.getTotalPrintTime()));
                     GlStateManager.translate(0, progress, 0);
                     GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
@@ -91,12 +92,13 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
             {
                 GlStateManager.depthMask(false);
                 GlStateManager.translate(0.5, 0.5, 0.5);
-                GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
-                GlStateManager.rotate(180F, 0, 1, 0);
+                GlStateManager.rotate(Vector3f.YP.rotationDegrees(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F));
+                GlStateManager.rotate(Vector3f.XP.rotationDegrees(180F));
                 GlStateManager.translate(0.0675, 0.005, -0.032);
                 GlStateManager.translate(-6.5 * 0.0625, -3.5 * 0.0625, 3.01 * 0.0625);
                 GlStateManager.scale(0.010416667F, -0.010416667F, 0.010416667F);
                 GlStateManager.glNormal3f(0.0F, 0.0F, -0.010416667F);
+                GlStateManager.rotate(Vector3f.XP.rotationDegrees(22.5F));
                 GlStateManager.rotate(22.5F, 1, 0, 0);
                 Minecraft.getMinecraft().fontRenderer.drawString(Integer.toString(te.getPaperCount()), 0, 0, Color.WHITE.getRGB());
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

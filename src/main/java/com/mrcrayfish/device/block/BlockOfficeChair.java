@@ -75,8 +75,7 @@ public class BlockOfficeChair extends BlockDevice.Colored
     @NotNull
     public AxisAlignedBB getBoundingBox(@NotNull IBlockState state, @NotNull IBlockAccess source, @NotNull BlockPos pos)
     {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if(player != null && player.getRidingEntity() instanceof EntitySeat)
+        if(Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getRidingEntity() instanceof EntitySeat)
         {
             return EMPTY_BOX;
         }

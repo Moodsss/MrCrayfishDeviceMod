@@ -20,6 +20,8 @@ public class TileEntityOfficeChair extends TileEntitySync implements IColored
 {
     private EnumDyeColor color = EnumDyeColor.RED;
 
+    private float rotation;
+
     @Override
     public EnumDyeColor getColor()
     {
@@ -38,7 +40,12 @@ public class TileEntityOfficeChair extends TileEntitySync implements IColored
         super.readFromNBT(compound);
         if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
         {
-            color = EnumDyeColor.byMetadata(compound.getByte("color"));
+            this.color = EnumDyeColor.byMetadata(compound.getByte("color"));
+        }
+
+        if(compound.hasKey("rotation", Constants.NBT.TAG_FLOAT))
+        {
+            this.rotation = compound.getFloat("rotation");
         }
     }
 
@@ -48,6 +55,7 @@ public class TileEntityOfficeChair extends TileEntitySync implements IColored
     {
         super.writeToNBT(compound);
         compound.setByte("color", (byte) color.getMetadata());
+        compound.setFloat("rotation", this.rotation);
         return compound;
     }
 
@@ -73,11 +81,18 @@ public class TileEntityOfficeChair extends TileEntitySync implements IColored
                     EntityLivingBase living = (EntityLivingBase) seat.getControllingPassenger();
                     living.renderYawOffset = living.rotationYaw;
                     living.prevRenderYawOffset = living.rotationYaw;
-                    return living.rotationYaw;
+                    this.rotation = living.rotationYaw;
                 }
-                return seat.getControllingPassenger().rotationYaw;
+                this.rotation = seat.getControllingPassenger().rotationYaw;
             }
         }
-        return getBlockMetadata() * 90F + 180F;
+
+        return this.rotation;
+    }
+
+    @SideOnly(Side.CLIENT)
+    protected static float lerp(float delta, float start, float end)
+    {
+        return start + delta * (end - start);
     }
 }

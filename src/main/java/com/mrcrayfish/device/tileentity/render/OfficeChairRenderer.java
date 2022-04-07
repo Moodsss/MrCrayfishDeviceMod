@@ -3,6 +3,7 @@ package com.mrcrayfish.device.tileentity.render;
 import com.mrcrayfish.device.block.BlockOfficeChair;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.tileentity.TileEntityOfficeChair;
+import moodss.util.math.vec.Vector3f;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -39,7 +40,7 @@ public class OfficeChairRenderer extends TileEntitySpecialRenderer<TileEntityOff
             GlStateManager.translate(x, y, z);
 
             GlStateManager.translate(0.5, 0, 0.5);
-            GlStateManager.rotate(-te.getRotation(), 0, 1, 0);
+            GlStateManager.rotate(Vector3f.YP.rotationDegrees(te.getRotation()));
             GlStateManager.translate(-0.5, 0, -0.5);
 
             IBlockState state = tempState.getBlock().getActualState(tempState, te.getWorld(), pos).withProperty(BlockOfficeChair.FACING, EnumFacing.NORTH).withProperty(BlockOfficeChair.TYPE, BlockOfficeChair.Type.SEAT);

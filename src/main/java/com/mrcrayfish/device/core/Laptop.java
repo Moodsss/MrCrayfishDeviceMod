@@ -75,7 +75,7 @@ public class Laptop extends GuiScreen implements System
 
 	private final Settings settings;
 	private final TaskBar bar;
-	private final Window<?>[] windows;
+	private final LaptopWindowManager windowManager;
 	private Layout context = null;
 
 	private final NBTTagCompound appData;
@@ -83,7 +83,7 @@ public class Laptop extends GuiScreen implements System
 
 	private int currentWallpaper;
 	private int lastMouseX, lastMouseY;
-	private boolean dragging = false;
+	protected boolean dragging = false;
 
 	protected final List<AppInfo> installedApps = new ObjectArrayList<>();
 
@@ -91,7 +91,7 @@ public class Laptop extends GuiScreen implements System
 	{
 		this.appData = laptop.getApplicationData();
 		this.systemData = laptop.getSystemData();
-		this.windows = new Window<?>[5];
+		this.windowManager = new LaptopWindowManager(this);
 		this.settings = Settings.fromTag(systemData.getCompoundTag("Settings"));
 		this.bar = new TaskBar(this);
 		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
@@ -140,14 +140,7 @@ public class Laptop extends GuiScreen implements System
     {
         Keyboard.enableRepeatEvents(false);
 
-        /* Close all windows and sendTask application data */
-        for(Window<?> window : windows)
-		{
-        	if(window != null)
-			{
-        		window.close();
-			}
-		}
+        this.windowManager.onGuiClose();
 
 		/* Send system data */
 		this.updateSystemData();
@@ -173,27 +166,15 @@ public class Laptop extends GuiScreen implements System
 	public void onResize(@NotNull Minecraft mcIn, int width, int height)
 	{
 		super.onResize(mcIn, width, height);
-		for(Window<?> window : windows)
-		{
-			if(window != null)
-			{
-				window.content.markForLayoutUpdate();
-			}
-		}
+		this.windowManager.markForUpdate();
 	}
 	
 	@Override
 	public void updateScreen()
 	{
-		bar.onTick();
+		this.bar.onTick();
 
-		for(Window<?> window : windows)
-		{
-			if(window != null)
-			{
-				window.onTick();
-			}
-		}
+		this.windowManager.onTick();
 
 		FileBrowser.refreshList = false;
 	}
@@ -250,14 +231,7 @@ public class Laptop extends GuiScreen implements System
 		Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
 
 		/* Window */
-		for(int i = windows.length - 1; i >= 0; i--)
-		{
-			Window<?> window = windows[i];
-			if(window != null)
-			{
-				window.render(this, mc, posX + BORDER, posY + BORDER, mouseX, mouseY, i == 0 && !insideContext, partialTicks);
-			}
-		}
+		this.windowManager.onRender(posX + BORDER, posY + BORDER, mouseX, mouseY, insideContext, partialTicks);
 
 		/* Application Bar */
 		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
@@ -312,38 +286,7 @@ public class Laptop extends GuiScreen implements System
 
 		this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, mouseX, mouseY, mouseButton);
 
-		for(int i = 0; i < windows.length; i++)
-		{
-			Window<?> window = windows[i];
-			if(window != null)
-			{
-				if(window.getContent() instanceof Application)
-				{
-					Window<Dialog> dialogWindow = ((Window<Application>) window).getContent().getActiveDialog();
-					if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
-					{
-						windows[i] = null;
-						updateWindowStack();
-						windows[0] = window;
-
-						windows[0].handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
-
-						if(isMouseWithinWindowBar(mouseX, mouseY, dialogWindow))
-						{
-							this.dragging = true;
-							return;
-						}
-
-						if(isMouseWithinWindowBar(mouseX, mouseY, window) && dialogWindow == null)
-						{
-							this.dragging = true;
-							return;
-						}
-						break;
-					}
-				}
-			}
-		}
+		this.windowManager.onMouseClicked(posX, posY, mouseX, mouseY, mouseButton);
 		
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
@@ -362,9 +305,11 @@ public class Laptop extends GuiScreen implements System
 				this.context.handleMouseRelease(mouseX, mouseY, state);
 			}
 		}
-		else if(windows[0] != null)
+
+		Window<?> window = this.windowManager.currentWindow();
+		if(window != null)
 		{
-			windows[0].handleMouseRelease(mouseX, mouseY, state);
+			window.handleMouseRelease(mouseX, mouseY, state);
 		}
 	}
 	
@@ -376,19 +321,21 @@ public class Laptop extends GuiScreen implements System
         	char pressed = Keyboard.getEventCharacter();
         	int code = Keyboard.getEventKey();
 
-            if(windows[0] != null)
-    		{
-    			windows[0].handleKeyTyped(pressed, code);
-    		}
+			Window<?> window = this.windowManager.currentWindow();
+			if(window != null)
+			{
+				window.handleKeyTyped(pressed, code);
+			}
             
             super.keyTyped(pressed, code);
         }
         else
         {
-        	if(windows[0] != null)
-    		{
-    			windows[0].handleKeyReleased(Keyboard.getEventCharacter(), Keyboard.getEventKey());
-    		}
+			Window<?> window = this.windowManager.currentWindow();
+			if(window != null)
+			{
+				window.handleKeyReleased(Keyboard.getEventCharacter(), Keyboard.getEventKey());
+			}
         }
 
         this.mc.dispatchKeypresses();
@@ -411,9 +358,9 @@ public class Laptop extends GuiScreen implements System
 			return;
 		}
 
-		if(windows[0] != null)
+		Window<?> window = this.windowManager.currentWindow();
+		if(window != null)
 		{
-			Window<?> window = windows[0];
 			if(window.getContent() instanceof Application)
 			{
 				Window<Dialog> dialogWindow = ((Application) window.getContent()).getActiveDialog();
@@ -444,6 +391,7 @@ public class Laptop extends GuiScreen implements System
 				}
 			}
 		}
+
 		this.lastMouseX = mouseX;
 		this.lastMouseY = mouseY;
 	}
@@ -457,9 +405,10 @@ public class Laptop extends GuiScreen implements System
 		int scroll = Mouse.getEventDWheel();
 		if(scroll != 0)
 		{
-			if(windows[0] != null)
+			Window<?> window = this.windowManager.currentWindow();
+			if(window != null)
 			{
-				windows[0].handleMouseScroll(mouseX, mouseY, scroll >= 0);
+				window.handleMouseScroll(mouseX, mouseY, scroll >= 0);
 			}
 		}
 	}
@@ -477,24 +426,7 @@ public class Laptop extends GuiScreen implements System
 
 	public boolean sendApplicationToFront(AppInfo info)
 	{
-		for(int i = 0; i < windows.length; i++)
-		{
-			Window<?> window = windows[i];
-			if(window != null && window.content != null)
-			{
-				if(window.content instanceof Application)
-				{
-					if(((Application) window.content).getInfo().equals(info))
-					{
-						windows[i] = null;
-						updateWindowStack();
-						windows[0] = window;
-						return true;
-					}
-				}
-			}
-		}
-		return false;
+		return this.windowManager.sendApplicationToFront(info);
 	}
 
 	@Override
@@ -584,75 +516,17 @@ public class Laptop extends GuiScreen implements System
 
 	private void closeApplication(Application app)
 	{
-		for(int i = 0; i < windows.length; i++)
-		{
-			Window<?> window = windows[i];
-			if(window != null)
-			{
-				if(window.content instanceof Application)
-				{
-					if(((Application) window.content).getInfo().equals(app.getInfo()))
-					{
-						if(app.isDirty())
-						{
-							NBTTagCompound container = new NBTTagCompound();
-							app.save(container);
-							app.clean();
-							appData.setTag(app.getInfo().getFormattedId(), container);
-							TaskManager.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getInfo().getFormattedId(), container));
-						}
-
-						if(app instanceof SystemApplication)
-						{
-							((SystemApplication) app).setLaptop(null);
-						}
-
-						window.handleClose();
-						windows[i] = null;
-						return;
-					}
-				}
-			}
-		}
+		this.windowManager.closeApplication(app);
 	}
 	
 	private void addWindow(Window<Application> window)
 	{
-		if(hasReachedWindowLimit())
-			return;
-
-		updateWindowStack();
-		windows[0] = window;
-	}
-
-	private void updateWindowStack()
-	{
-		for(int i = windows.length - 1; i >= 0; i--)
-		{
-			if(windows[i] != null)
-			{
-				if(i + 1 < windows.length)
-				{
-					if(i == 0 || windows[i - 1] != null)
-					{
-						if(windows[i + 1] == null)
-						{
-							windows[i + 1] = windows[i];
-							windows[i] = null;
-						}
-					}
-				}
-			}
-		}
+		this.windowManager.addWindow(window);
 	}
 
 	private boolean hasReachedWindowLimit()
 	{
-		for(Window<?> window : windows)
-		{
-			if(window == null) return false;
-		}
-		return true;
+		return this.windowManager.hasReachedWindowLimit();
 	}
 
 	private boolean isMouseOnScreen(int mouseX, int mouseY)
@@ -662,7 +536,7 @@ public class Laptop extends GuiScreen implements System
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX, posY, posX + SCREEN_WIDTH, posY + SCREEN_HEIGHT);
 	}
 
-	private boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window<?> window)
+	protected boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window<?> window)
 	{
 		if(window == null) return false;
 		int posX = (width - SCREEN_WIDTH) / 2;
@@ -670,7 +544,7 @@ public class Laptop extends GuiScreen implements System
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 1, posX + window.offsetX + window.width - 13, posY + window.offsetY + 11);
 	}
 
-	private boolean isMouseWithinWindow(int mouseX, int mouseY, Window<?> window)
+	protected boolean isMouseWithinWindow(int mouseX, int mouseY, Window<?> window)
 	{
 		if(window == null) return false;
 		int posX = (width - SCREEN_WIDTH) / 2;
@@ -687,14 +561,7 @@ public class Laptop extends GuiScreen implements System
 
 	public boolean isApplicationRunning(AppInfo info)
 	{
-		for(Window<?> window : windows)
-		{
-			if(window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
-			{
-				return true;
-			}
-		}
-		return false;
+		return this.windowManager.isApplicationRunning(info);
 	}
 
 	public void nextWallpaper()
@@ -741,6 +608,11 @@ public class Laptop extends GuiScreen implements System
 	public List<AppInfo> getInstalledApplications()
 	{
 		return ImmutableList.copyOf(installedApps);
+	}
+
+	protected NBTTagCompound getAppData()
+	{
+		return this.appData;
 	}
 
 	public boolean isApplicationInstalled(AppInfo info)

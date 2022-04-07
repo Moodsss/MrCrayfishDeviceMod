@@ -4,6 +4,7 @@ import com.mrcrayfish.device.block.BlockLaptop;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import moodss.util.math.vec.Vector3f;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -40,7 +41,7 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 				GlStateManager.pushMatrix();
 				{
 					GlStateManager.translate(0.5, 0, 0.5);
-					GlStateManager.rotate(te.getBlockMetadata() * -90F - 90F, 0, 1, 0);
+					GlStateManager.rotate(Vector3f.YP.rotationDegrees(te.getBlockMetadata() * -90F - 90F));
 					GlStateManager.translate(-0.5, 0, -0.5);
 					GlStateManager.translate(0.595, -0.2075, -0.005);
 					entityItem.hoverStart = 0.0F;
@@ -54,7 +55,7 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 			GlStateManager.pushMatrix();
 			{
 				GlStateManager.translate(0.5, 0, 0.5);
-				GlStateManager.rotate(te.getBlockMetadata() * -90F + 180F, 0, 1, 0);
+				GlStateManager.rotate(Vector3f.YP.rotationDegrees(te.getBlockMetadata() * -90F - 180F));
 				GlStateManager.translate(-0.5, 0, -0.5);
 				GlStateManager.translate(0, 0.0625, 0.25);
 				GlStateManager.rotate(te.getScreenAngle(partialTicks), 1, 0, 0);
