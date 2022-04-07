@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class PrintingManager
 {
-    private static HashBiMap<String, Class<? extends IPrint>> registeredPrints = HashBiMap.create();
+    private static final HashBiMap<String, Class<? extends IPrint>> registeredPrints = HashBiMap.create();
 
     @SideOnly(Side.CLIENT)
     private static Map<String, IPrint.Renderer> registeredRenders;

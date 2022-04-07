@@ -21,7 +21,7 @@ import net.minecraft.world.World;
  */
 public abstract class Task 
 {
-	private String name;
+	private final String name;
 	private Callback<NBTTagCompound> callback = null;
 	private boolean success = false;
 	

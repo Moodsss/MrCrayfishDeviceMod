@@ -10,7 +10,6 @@ import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.task.TaskManager;
@@ -93,7 +92,7 @@ public class ApplicationEmail extends Application
 	
 	/* Contacts Layout */
 	private Layout layoutContacts;
-	private ItemList listContacts;
+	private ItemList<?> listContacts;
 	private Button btnAddContact;
 	private Button btnDeleteContact;
 	private Button btnCancelContact;
@@ -109,7 +108,7 @@ public class ApplicationEmail extends Application
 	
 	/* Insert Contact Layout */
 	private Layout layoutInsertContact;
-	private ItemList listContacts2;
+	private ItemList<?> listContacts2;
 	private Button btnInsertContact;
 	private Button btnCancelInsertContact;
 
@@ -201,23 +200,19 @@ public class ApplicationEmail extends Application
 		/* Inbox Layout */
 		
 		layoutInbox = new Layout(260, 146);
-		layoutInbox.setInitListener(new InitListener()
-		{
-			@Override
-			public void onInit()
+		layoutInbox.setInitListener(() -> {
+			TaskUpdateInbox taskUpdateInbox = new TaskUpdateInbox();
+			taskUpdateInbox.setCallback((nbt, success) ->
 			{
-				TaskUpdateInbox taskUpdateInbox = new TaskUpdateInbox();
-				taskUpdateInbox.setCallback((nbt, success) ->
+				listEmails.removeAll();
+				for (Email email : EmailManager.INSTANCE.getInbox())
 				{
-                    listEmails.removeAll();
-                    for (Email email : EmailManager.INSTANCE.getInbox())
-                    {
-                        listEmails.addItem(email);
-                    }
-                });
-				TaskManager.sendTask(taskUpdateInbox);
-			}
+					listEmails.addItem(email);
+				}
+			});
+			TaskManager.sendTask(taskUpdateInbox);
 		});
+
 		layoutInbox.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
 		{
 			mc.getTextureManager().bindTexture(ENDER_MAIL_BACKGROUND);
@@ -523,7 +518,7 @@ public class ApplicationEmail extends Application
 		TaskCheckEmailAccount taskCheckAccount = new TaskCheckEmailAccount();
 		taskCheckAccount.setCallback((nbt, success) ->
 		{
-            if (success)
+            if (success && nbt != null)
             {
                 currentName = nbt.getString("Name");
                 listEmails.removeAll();

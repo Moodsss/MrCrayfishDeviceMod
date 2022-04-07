@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class ImageEntry
 {
-    private Type type;
+    private final Type type;
     private ResourceLocation resource;
     private String url;
 
@@ -40,6 +40,6 @@ public class ImageEntry
 
     public enum Type
     {
-        LOCAL, REMOTE;
+        LOCAL, REMOTE
     }
 }

@@ -7,6 +7,7 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
 import com.mrcrayfish.device.util.GuiHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -16,11 +17,9 @@ import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -36,7 +35,7 @@ public class TextArea extends Component
 		{
 			joiner.add(s);
 		}
-		SPLIT_REGEX = String.format(UNFORMATTED_SPLIT, "(" + joiner.toString() + ")");
+		SPLIT_REGEX = String.format(UNFORMATTED_SPLIT, "(" + joiner + ")");
 	}
 
 	protected FontRenderer fontRenderer;
@@ -47,7 +46,7 @@ public class TextArea extends Component
 	private int padding = 4;
 	private boolean isFocused = false;
 	private boolean editable = true;
-	private List<String> lines = new ArrayList<>();
+	private List<String> lines = new ObjectArrayList<>();
 	private int visibleLines;
 	private int maxLines;
 	private ScrollBar scrollBar;
@@ -68,7 +67,7 @@ public class TextArea extends Component
 	private KeyListener keyListener = null;
 
 	/* Personalisation */
-	protected int placeholderColor = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
+	protected final int placeholderColor = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
 	protected int textColor = Color.WHITE.getRGB();
 	protected int backgroundColor = Color.DARK_GRAY.getRGB();
 	protected int secondaryBackgroundColor = Color.GRAY.getRGB();
@@ -522,13 +521,14 @@ public class TextArea extends Component
 		{
 			String previousLine = lines.get(cursorY - 1);
 			moveCursorLeft(1);
+			String substring = previousLine.substring(0, Math.max(previousLine.length() - 1, 0));
 			if(!activeLine.isEmpty())
 			{
-				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)) + activeLine);
+				lines.set(cursorY, substring + activeLine);
 			}
 			else
 			{
-				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
+				lines.set(cursorY, substring);
 			}
 			lines.remove(cursorY + 1);
 		}
@@ -780,7 +780,7 @@ public class TextArea extends Component
      */
 	private void updateText()
 	{
-		List<String> updatedLines = new ArrayList<>();
+		List<String> updatedLines = new ObjectArrayList<>();
 		if(wrapText)
 		{
 			for(int i = 0; i < lines.size() - 1; i++)

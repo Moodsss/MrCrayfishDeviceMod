@@ -10,7 +10,7 @@ public class ItemComponent extends Item
 {
     public ItemComponent(String id)
     {
-        this.setUnlocalizedName(id);
+        this.setTranslationKey(id);
         this.setRegistryName(id);
         this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
     }

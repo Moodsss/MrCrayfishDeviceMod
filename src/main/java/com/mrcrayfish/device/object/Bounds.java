@@ -9,8 +9,12 @@ import net.minecraft.util.math.AxisAlignedBB;
  */
 public class Bounds
 {
-    public double x1, y1, z1;
-    public double x2, y2, z2;
+    public final double x1;
+    public final double y1;
+    public final double z1;
+    public final double x2;
+    public final double y2;
+    public final double z2;
 
     public Bounds(double x1, double y1, double z1, double x2, double y2, double z2)
     {

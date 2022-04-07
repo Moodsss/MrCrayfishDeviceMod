@@ -8,7 +8,6 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.print.IPrint;
@@ -174,7 +173,7 @@ public class ApplicationPixelPainter extends Application
 			listPictures.removeAll();
 			FileSystem.getApplicationFolder(this, (folder, success) ->
 			{
-                if(success)
+                if(success && folder != null)
 				{
 					folder.search(file -> file.isForApplication(this)).forEach(file ->
 					{
@@ -252,26 +251,29 @@ public class ApplicationPixelPainter extends Application
 			if(listPictures.getSelectedIndex() != -1)
 			{
 				Picture picture = listPictures.getSelectedItem();
-				File file = picture.getSource();
-				if(file != null)
+				if(picture != null)
 				{
-					file.delete((o, success) ->
+					File file = picture.getSource();
+					if(file != null)
 					{
-						if(success)
+						file.delete((o, success) ->
 						{
-							listPictures.removeItem(listPictures.getSelectedIndex());
-							btnDeleteSavedPicture.setEnabled(false);
-							btnLoadSavedPicture.setEnabled(false);
-						}
-						else
-						{
-							//TODO error dialog
-						}
-                    });
-				}
-				else
-				{
-					//TODO error dialog
+							if(success)
+							{
+								listPictures.removeItem(listPictures.getSelectedIndex());
+								btnDeleteSavedPicture.setEnabled(false);
+								btnLoadSavedPicture.setEnabled(false);
+							}
+							else
+							{
+								//TODO error dialog
+							}
+						});
+					}
+					else
+					{
+						//TODO error dialog
+					}
 				}
 			}
 		});
@@ -356,14 +358,17 @@ public class ApplicationPixelPainter extends Application
 				{
 					file.setData(pictureTag, (response, success) ->
 					{
-						if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+						if(response != null)
 						{
-							canvas.clear();
-							setCurrentLayout(layoutLoadPicture);
-						}
-						else
-						{
-							//TODO error dialog
+							if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+							{
+								canvas.clear();
+								setCurrentLayout(layoutLoadPicture);
+							}
+							else
+							{
+								//TODO error dialog
+							}
 						}
 					});
 				}
@@ -391,36 +396,15 @@ public class ApplicationPixelPainter extends Application
 		layoutDraw.addComponent(btnSave);
 
 		redSlider = new Slider(158, 30, 50);
-		redSlider.setSlideListener(new SlideListener()
-		{
-			@Override
-			public void onSlide(float percentage)
-			{
-				canvas.setRed(percentage);
-			}
-		});
+		redSlider.setSlideListener(percentage -> canvas.setRed(percentage));
 		layoutDraw.addComponent(redSlider);
 
 		greenSlider = new Slider(158, 46, 50);
-		greenSlider.setSlideListener(new SlideListener()
-		{
-			@Override
-			public void onSlide(float percentage)
-			{
-				canvas.setGreen(percentage);
-			}
-		});
+		greenSlider.setSlideListener(percentage -> canvas.setGreen(percentage));
 		layoutDraw.addComponent(greenSlider);
 
 		blueSlider = new Slider(158, 62, 50);
-		blueSlider.setSlideListener(new SlideListener()
-		{
-			@Override
-			public void onSlide(float percentage)
-			{
-				canvas.setBlue(percentage);
-			}
-		});
+		blueSlider.setSlideListener(percentage -> canvas.setBlue(percentage));
 		layoutDraw.addComponent(blueSlider);
 
 		colorDisplay = new Component(158, 5)

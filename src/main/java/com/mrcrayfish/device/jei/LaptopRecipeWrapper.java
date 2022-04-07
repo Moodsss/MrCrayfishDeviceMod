@@ -3,8 +3,8 @@ package com.mrcrayfish.device.jei;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceItems;
-import com.mrcrayfish.device.recipe.RecipeLaptop;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class LaptopRecipeWrapper implements IShapedCraftingRecipeWrapper
 {
-    private List<ItemStack> inputs;
-    private List<ItemStack> outputs;
+    private final List<ItemStack> inputs;
+    private final List<ItemStack> outputs;
 
     public LaptopRecipeWrapper(EnumDyeColor color)
     {
@@ -50,8 +50,8 @@ public class LaptopRecipeWrapper implements IShapedCraftingRecipeWrapper
     @Override
     public void getIngredients(IIngredients ingredients)
     {
-        ingredients.setInputs(ItemStack.class, inputs);
-        ingredients.setOutputs(ItemStack.class, outputs);
+        ingredients.setInputs(VanillaTypes.ITEM, inputs);
+        ingredients.setOutputs(VanillaTypes.ITEM, outputs);
     }
 
     @Override

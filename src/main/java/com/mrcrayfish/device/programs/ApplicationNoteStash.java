@@ -54,12 +54,10 @@ public class ApplicationNoteStash extends Application
 			notes.getItems().clear();
 			FileSystem.getApplicationFolder(this, (folder, success) ->
 			{
-				if(success)
+				if(success && folder != null)
 				{
 					folder.search(file -> file.isForApplication(this)).forEach(file ->
-					{
-						notes.addItem(Note.fromFile(file));
-					});
+							notes.addItem(Note.fromFile(file)));
 				}
 				else
 				{
@@ -89,8 +87,11 @@ public class ApplicationNoteStash extends Application
             if(notes.getSelectedIndex() != -1)
             {
                 Note note = notes.getSelectedItem();
-                noteTitle.setText(note.getTitle());
-                noteContent.setText(note.getContent());
+                if(note != null)
+				{
+					noteTitle.setText(note.getTitle());
+					noteContent.setText(note.getContent());
+				}
                 setCurrentLayout(layoutViewNote);
             }
         });
@@ -106,26 +107,29 @@ public class ApplicationNoteStash extends Application
 				if(notes.getSelectedIndex() != -1)
 				{
 					Note note = notes.getSelectedItem();
-					File file = note.getSource();
-					if(file != null)
+					if(note != null)
 					{
-						file.delete((o, success) ->
+						File file = note.getSource();
+						if(file != null)
 						{
-							if(success)
+							file.delete((o, success) ->
 							{
-								notes.removeItem(notes.getSelectedIndex());
-								btnView.setEnabled(false);
-								btnDelete.setEnabled(false);
-							}
-							else
-							{
-								//TODO error dialog
-							}
-						});
-					}
-					else
-					{
-						//TODO error dialog
+								if(success)
+								{
+									notes.removeItem(notes.getSelectedIndex());
+									btnView.setEnabled(false);
+									btnDelete.setEnabled(false);
+								}
+								else
+								{
+									//TODO error dialog
+								}
+							});
+						}
+						else
+						{
+							//TODO error dialog
+						}
 					}
 				}
             }
@@ -215,8 +219,11 @@ public class ApplicationNoteStash extends Application
 			return false;
 
 		NBTTagCompound data = file.getData();
-		noteTitle.setText(data.getString("title"));
-		noteContent.setText(data.getString("content"));
+		if(data != null)
+		{
+			noteTitle.setText(data.getString("title"));
+			noteContent.setText(data.getString("content"));
+		}
 		setCurrentLayout(layoutViewNote);
 		return true;
 	}
@@ -224,8 +231,8 @@ public class ApplicationNoteStash extends Application
 	private static class Note
 	{
 		private File source;
-		private String title;
-		private String content;
+		private final String title;
+		private final String content;
 
 		public Note(String title, String content)
 		{

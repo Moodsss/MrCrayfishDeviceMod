@@ -14,6 +14,7 @@ import com.mrcrayfish.device.core.network.task.TaskPing;
 import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -100,9 +100,7 @@ public class TrayItemWifi extends TrayItem
     {
         Layout layout = new Layout.Context(100, 100);
         layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-        {
-            Gui.drawRect(x, y, x + width, y + height, new Color(0.65F, 0.65F, 0.65F, 0.9F).getRGB());
-        });
+                Gui.drawRect(x, y, x + width, y + height, new Color(0.65F, 0.65F, 0.65F, 0.9F).getRGB()));
 
         ItemList<Device> itemListRouters = new ItemList<>(5, 5, 90, 4);
         itemListRouters.setItems(getRouters());
@@ -137,7 +135,7 @@ public class TrayItemWifi extends TrayItem
             BlockPos laptopPos = Laptop.getPos();
             double distance1 = Math.sqrt(o1.getPos().distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
             double distance2 = Math.sqrt(o2.getPos().distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
-            return distance1 == distance2 ? 0 : distance1 > distance2 ? 1 : -1;
+            return Double.compare(distance1, distance2);
         });
         layout.addComponent(itemListRouters);
 
@@ -168,7 +166,7 @@ public class TrayItemWifi extends TrayItem
 
     private static List<Device> getRouters()
     {
-        List<Device> routers = new ArrayList<>();
+        List<Device> routers = new ObjectArrayList<>();
 
         World world = Minecraft.getMinecraft().world;
         BlockPos laptopPos = Laptop.getPos();

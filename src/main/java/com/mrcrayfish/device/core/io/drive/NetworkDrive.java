@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
  */
 public final class NetworkDrive extends AbstractDrive
 {
-    private BlockPos pos;
+    private final BlockPos pos;
 
     public NetworkDrive(String name, BlockPos pos)
     {

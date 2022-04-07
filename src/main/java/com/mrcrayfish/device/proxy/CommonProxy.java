@@ -8,6 +8,7 @@ import com.mrcrayfish.device.network.task.MessageSyncApplications;
 import com.mrcrayfish.device.network.task.MessageSyncConfig;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +21,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class CommonProxy
 	{
 		if(allowedApps == null)
 		{
-			allowedApps = new ArrayList<>();
+			allowedApps = new ObjectArrayList<>();
 		}
 		if(SystemApplication.class.isAssignableFrom(clazz))
 		{

@@ -19,9 +19,10 @@ import net.minecraft.util.math.BlockPos;
 /**
  * Author: MrCrayfish
  */
+@SuppressWarnings("deprecation")
 public class OfficeChairRenderer extends TileEntitySpecialRenderer<TileEntityOfficeChair>
 {
-    private Minecraft mc = Minecraft.getMinecraft();
+    private static final Minecraft mc = Minecraft.getMinecraft();
 
     @Override
     public void render(TileEntityOfficeChair te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)

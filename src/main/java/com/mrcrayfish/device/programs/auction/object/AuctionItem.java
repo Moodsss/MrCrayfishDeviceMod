@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public class AuctionItem
 {
-	private UUID id;
-	private ItemStack stack;
-	private int price;
+	private final UUID id;
+	private final ItemStack stack;
+	private final int price;
 	private long timeLeft;
-	private UUID sellerId;
+	private final UUID sellerId;
 	
 	public AuctionItem(ItemStack stack, int price, long timeLeft, UUID sellerId)
 	{

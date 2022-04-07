@@ -1,11 +1,9 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
@@ -15,7 +13,7 @@ public class Text extends Component
 {
 	protected String rawText;
 	protected List<String> lines;
-	protected int width;
+	protected final int width;
 	protected int padding;
 	protected boolean shadow = false;
 	

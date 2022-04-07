@@ -15,7 +15,7 @@ public class Slider extends Component
 	protected boolean dragging = false;
 	protected int clickX;
 	
-	protected int width;
+	protected final int width;
 	protected int prevSliderX;
 	protected int newSliderX;
 	

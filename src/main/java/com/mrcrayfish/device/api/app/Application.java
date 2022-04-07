@@ -12,9 +12,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
 import java.lang.*;
 
 /**
@@ -24,6 +24,7 @@ import java.lang.*;
  */
 public abstract class Application extends Wrappable
 {
+    @Nullable
 	protected final AppInfo info = null;
 	private BlockPos laptopPositon;
 
@@ -38,9 +39,10 @@ public abstract class Application extends Wrappable
 	/** If set to true, will update layout */
 	private boolean pendingLayoutUpdate = false;
 
+    @Nullable
 	public AppInfo getInfo()
 	{
-		return info;
+		return this.info;
 	}
 
     /**

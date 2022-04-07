@@ -6,6 +6,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Author: MrCrayfish
@@ -65,7 +66,7 @@ public class TileEntityRouter extends TileEntityDevice.Colored
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    public @NotNull NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound)
     {
         super.writeToNBT(compound);
         compound.setTag("router", getRouter().toTag(false));
@@ -73,7 +74,7 @@ public class TileEntityRouter extends TileEntityDevice.Colored
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(@NotNull NBTTagCompound compound)
     {
         super.readFromNBT(compound);
         if(compound.hasKey("router", Constants.NBT.TAG_COMPOUND))
@@ -96,6 +97,7 @@ public class TileEntityRouter extends TileEntityDevice.Colored
 
     @Override
     @SideOnly(Side.CLIENT)
+    @NotNull
     public AxisAlignedBB getRenderBoundingBox()
     {
         return INFINITE_EXTENT_AABB;

@@ -24,8 +24,7 @@ public class DeviceSounds
     private static SoundEvent registerSound(String soundNameIn)
     {
         ResourceLocation resource = new ResourceLocation(soundNameIn);
-        SoundEvent sound = new SoundEvent(resource).setRegistryName(soundNameIn);
-        return sound;
+        return new SoundEvent(resource).setRegistryName(soundNameIn);
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)

@@ -6,11 +6,7 @@ import com.mrcrayfish.device.api.task.Task;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
-import java.util.List;
 
 /**
  * Author: MrCrayfish

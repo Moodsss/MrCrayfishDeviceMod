@@ -22,7 +22,7 @@ import java.awt.*;
  */
 public class Palette extends Component
 {
-    private ComboBox.Custom<Integer> colorPicker;
+    private final ComboBox.Custom<Integer> colorPicker;
 
     private Color currentColor = Color.RED;
 
@@ -66,9 +66,9 @@ public class Palette extends Component
             {
                 currentColor = new Color(0.0F, (percentage - ((1.0F / 6.0F) * 2.0F)) * 6.0F, 1.0F);
             }
-            else if(percentage >= (1.0 / 6.0) * 1.0)
+            else if(percentage >= (1.0 / 6.0))
             {
-                currentColor = new Color(1.0F - (percentage - ((1.0F / 6.0F) * 1.0F)) * 6.0F, 0.0F, 1.0F);
+                currentColor = new Color(1.0F - (percentage - ((1.0F / 6.0F))) * 6.0F, 0.0F, 1.0F);
             }
             else if(percentage >= (1.0 / 6.0) * 0.0)
             {
@@ -93,9 +93,9 @@ public class Palette extends Component
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos((double) x + 1, (double)(y + 1 + 50), 1).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((double)(x + 1 + 50), (double)(y + 1 + 50), 1).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((double)(x + 1 + 50), (double) y + 1, 1).color(currentColor.getRed() / 255F, currentColor.getGreen() / 255F, currentColor.getBlue() / 255F, 1.0F).endVertex();
+        buffer.pos((double) x + 1, y + 1 + 50, 1).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(x + 1 + 50, y + 1 + 50, 1).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(x + 1 + 50, (double) y + 1, 1).color(currentColor.getRed() / 255F, currentColor.getGreen() / 255F, currentColor.getBlue() / 255F, 1.0F).endVertex();
         buffer.pos((double) x + 1, (double) y + 1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
         tessellator.draw();
 

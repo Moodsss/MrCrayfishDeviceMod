@@ -10,9 +10,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -37,7 +37,8 @@ public class Image extends Component
     protected int imageU, imageV;
     protected int imageWidth, imageHeight;
     protected int sourceWidth, sourceHeight;
-    protected int componentWidth, componentHeight;
+    protected final int componentWidth;
+    protected final int componentHeight;
 
     private float alpha = 1.0F;
 
@@ -384,7 +385,7 @@ public class Image extends Component
     private static class DynamicLoader extends ImageLoader
     {
         private AbstractTexture texture;
-        private String url;
+        private final String url;
 
         public DynamicLoader(String url)
         {
@@ -448,7 +449,7 @@ public class Image extends Component
 
     private static class DynamicTexture extends AbstractTexture
     {
-        private BufferedImage image;
+        private final BufferedImage image;
 
         private DynamicTexture(BufferedImage image)
         {
@@ -456,7 +457,7 @@ public class Image extends Component
         }
 
         @Override
-        public void loadTexture(IResourceManager resourceManager) throws IOException
+        public void loadTexture(@NotNull IResourceManager resourceManager)
         {
             TextureUtil.uploadTextureImageAllocate(getGlTextureId(), image, false, true);
         }
@@ -489,7 +490,7 @@ public class Image extends Component
         private final int textureId;
         private final int width;
         private final int height;
-        private boolean dynamic;
+        private final boolean dynamic;
         private boolean delete = false;
 
         private CachedImage(int textureId, int width, int height, boolean dynamic)

@@ -25,6 +25,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -36,14 +37,15 @@ public class ItemEthernetCable extends Item
 {
     public ItemEthernetCable()
     {
-        this.setUnlocalizedName("ethernet_cable");
+        this.setTranslationKey("ethernet_cable");
         this.setRegistryName("ethernet_cable");
         this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
         this.setMaxStackSize(1);
     }
 
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+    @NotNull
+    public EnumActionResult onItemUseFirst(@NotNull EntityPlayer player, World world, @NotNull BlockPos pos, @NotNull EnumFacing side, float hitX, float hitY, float hitZ, @NotNull EnumHand hand)
     {
         if(!world.isRemote)
         {
@@ -62,6 +64,7 @@ public class ItemEthernetCable extends Item
                 Router router = tileEntityRouter.getRouter();
 
                 NBTTagCompound tag = heldItem.getTagCompound();
+
                 BlockPos devicePos = BlockPos.fromLong(tag.getLong("pos"));
 
                 TileEntity tileEntity1 = world.getTileEntity(devicePos);
@@ -113,9 +116,13 @@ public class ItemEthernetCable extends Item
                 TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
                 heldItem.setTagCompound(new NBTTagCompound());
                 NBTTagCompound tag = heldItem.getTagCompound();
-                tag.setUniqueId("id", tileEntityNetworkDevice.getId());
-                tag.setString("name", tileEntityNetworkDevice.getCustomName());
-                tag.setLong("pos", tileEntityNetworkDevice.getPos().toLong());
+
+                if(tag != null)
+                {
+                    tag.setUniqueId("id", tileEntityNetworkDevice.getId());
+                    tag.setString("name", tileEntityNetworkDevice.getCustomName());
+                    tag.setLong("pos", tileEntityNetworkDevice.getPos().toLong());
+                }
 
                 sendGameInfoMessage(player, "message.select_router");
                 return EnumActionResult.SUCCESS;
@@ -133,7 +140,8 @@ public class ItemEthernetCable extends Item
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    @NotNull
+    public ActionResult<ItemStack> onItemRightClick(World world, @NotNull EntityPlayer player, @NotNull EnumHand hand)
     {
         if(!world.isRemote)
         {
@@ -150,39 +158,38 @@ public class ItemEthernetCable extends Item
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, @NotNull List<String> tooltip, @NotNull ITooltipFlag flagIn)
     {
         if(stack.hasTagCompound())
         {
             NBTTagCompound tag = stack.getTagCompound();
             if(tag != null)
             {
-                tooltip.add(TextFormatting.RED.toString() + TextFormatting.BOLD.toString() + "ID: " + TextFormatting.RESET.toString() + tag.getUniqueId("id"));
-                tooltip.add(TextFormatting.RED.toString() + TextFormatting.BOLD.toString() + "Device: " + TextFormatting.RESET.toString() + tag.getString("name"));
+                tooltip.add(TextFormatting.RED.toString() + TextFormatting.BOLD + "ID: " + TextFormatting.RESET + tag.getUniqueId("id"));
+                tooltip.add(TextFormatting.RED.toString() + TextFormatting.BOLD + "Device: " + TextFormatting.RESET + tag.getString("name"));
 
                 BlockPos devicePos = BlockPos.fromLong(tag.getLong("pos"));
-                StringBuilder builder = new StringBuilder();
-                builder.append(TextFormatting.RED.toString() + TextFormatting.BOLD.toString() + "X: " + TextFormatting.RESET.toString() + devicePos.getX() + " ");
-                builder.append(TextFormatting.RED.toString() + TextFormatting.BOLD.toString() + "Y: " + TextFormatting.RESET.toString() + devicePos.getY() + " ");
-                builder.append(TextFormatting.RED.toString() + TextFormatting.BOLD.toString() + "Z: " + TextFormatting.RESET.toString() + devicePos.getZ());
-                tooltip.add(builder.toString());
+                String builder = TextFormatting.RED.toString() + TextFormatting.BOLD + "X: " + TextFormatting.RESET + devicePos.getX() + " " +
+                        TextFormatting.RED + TextFormatting.BOLD + "Y: " + TextFormatting.RESET + devicePos.getY() + " " +
+                        TextFormatting.RED + TextFormatting.BOLD + "Z: " + TextFormatting.RESET + devicePos.getZ();
+                tooltip.add(builder);
             }
         }
         else
         {
             if(!GuiScreen.isShiftKeyDown())
             {
-                tooltip.add(TextFormatting.GRAY.toString() + "Use this cable to connect");
-                tooltip.add(TextFormatting.GRAY.toString() + "a device to a router.");
-                tooltip.add(TextFormatting.YELLOW.toString() + "Hold SHIFT for How-To");
+                tooltip.add(TextFormatting.GRAY + "Use this cable to connect");
+                tooltip.add(TextFormatting.GRAY + "a device to a router.");
+                tooltip.add(TextFormatting.YELLOW + "Hold SHIFT for How-To");
                 return;
             }
 
-            tooltip.add(TextFormatting.GRAY.toString() + "Start by right clicking a");
-            tooltip.add(TextFormatting.GRAY.toString() + "device with this cable");
-            tooltip.add(TextFormatting.GRAY.toString() + "then right click the ");
-            tooltip.add(TextFormatting.GRAY.toString() + "router you want to");
-            tooltip.add(TextFormatting.GRAY.toString() + "connect this device to.");
+            tooltip.add(TextFormatting.GRAY + "Start by right clicking a");
+            tooltip.add(TextFormatting.GRAY + "device with this cable");
+            tooltip.add(TextFormatting.GRAY + "then right click the ");
+            tooltip.add(TextFormatting.GRAY + "router you want to");
+            tooltip.add(TextFormatting.GRAY + "connect this device to.");
         }
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
@@ -199,11 +206,12 @@ public class ItemEthernetCable extends Item
     }
 
     @Override
+    @NotNull
     public String getItemStackDisplayName(ItemStack stack)
     {
         if(stack.hasTagCompound())
         {
-            return TextFormatting.GRAY.toString() + TextFormatting.BOLD.toString() + super.getItemStackDisplayName(stack);
+            return TextFormatting.GRAY.toString() + TextFormatting.BOLD + super.getItemStackDisplayName(stack);
         }
         return super.getItemStackDisplayName(stack);
     }

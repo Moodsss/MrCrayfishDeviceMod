@@ -4,6 +4,8 @@ import com.google.common.collect.HashBiMap;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Notification;
 import com.mrcrayfish.device.programs.email.object.Email;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,8 +27,8 @@ public class EmailManager
     @SideOnly(Side.CLIENT)
     private List<Email> inbox;
 
-    private HashBiMap<UUID, String> uuidToName = HashBiMap.create();
-    private Map<String, List<Email>> nameToInbox = new HashMap<>();
+    private final HashBiMap<UUID, String> uuidToName = HashBiMap.create();
+    private final Map<String, List<Email>> nameToInbox = new Object2ObjectOpenHashMap<>();
 
     public boolean addEmailToInbox(Email email, String to)
     {
@@ -44,7 +46,7 @@ public class EmailManager
     {
         if(inbox == null)
         {
-            inbox = new ArrayList<>();
+            inbox = new ObjectArrayList<>();
         }
         return inbox;
     }
@@ -55,7 +57,7 @@ public class EmailManager
         {
             return nameToInbox.get(uuidToName.get(player.getUniqueID()));
         }
-        return new ArrayList<Email>();
+        return new ObjectArrayList<>();
     }
 
     public boolean addAccount(EntityPlayer player, String name)
@@ -65,7 +67,7 @@ public class EmailManager
             if (!uuidToName.containsValue(name))
             {
                 uuidToName.put(player.getUniqueID(), name);
-                nameToInbox.put(name, new ArrayList<Email>());
+                nameToInbox.put(name, new ObjectArrayList<>());
                 return true;
             }
         }
@@ -92,7 +94,7 @@ public class EmailManager
             NBTTagCompound inbox = inboxes.getCompoundTagAt(i);
             String name = inbox.getString("Name");
 
-            List<Email> emails = new ArrayList<Email>();
+            List<Email> emails = new ObjectArrayList<>();
             NBTTagList emailTagList = (NBTTagList) inbox.getTag("Emails");
             for (int j = 0; j < emailTagList.tagCount(); j++)
             {

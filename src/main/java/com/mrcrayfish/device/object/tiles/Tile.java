@@ -43,7 +43,7 @@ public class Tile
 	public final int x, y;
 	
 	private boolean hasTop = false;
-	public int topX = -1, topY = -1;
+	public int topX, topY;
 	
 	private Category category;
 	
@@ -99,13 +99,13 @@ public class Tile
 		return category;
 	}
 	
-	public static enum Category 
+	public enum Category
 	{
 		BLOCKS("Blocks"), DECORATION("Decorations"), GAME("Game");
 		
-		public String name;
+		public final String name;
 		
-		private Category(String name)
+		Category(String name)
 		{
 			this.name = name;
 		}

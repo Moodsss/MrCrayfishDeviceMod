@@ -1,10 +1,12 @@
 package com.mrcrayfish.device.programs.gitweb.component.container;
 
+import com.google.common.base.Objects;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -12,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,11 +25,12 @@ public abstract class ContainerBox extends Component
 
     public static final int WIDTH = 128;
 
-    protected List<Slot> slots = new ArrayList<>();
-    protected int boxU, boxV;
-    protected int height;
-    protected ItemStack icon;
-    protected String title;
+    protected final List<Slot> slots = new ObjectArrayList<>();
+    protected final int boxU;
+    protected final int boxV;
+    protected final int height;
+    protected final ItemStack icon;
+    protected final String title;
 
     public ContainerBox(int left, int top, int boxU, int boxV, int height, ItemStack icon, String title)
     {
@@ -66,11 +68,11 @@ public abstract class ContainerBox extends Component
         slots.forEach(slot -> slot.renderOverlay(laptop, xPosition, yPosition + 12, mouseX, mouseY));
     }
 
-    protected class Slot
+    protected static class Slot
     {
-        private int slotX;
-        private int slotY;
-        private ItemStack stack;
+        private final int slotX;
+        private final int slotY;
+        private final ItemStack stack;
 
         public Slot(int slotX, int slotY, ItemStack stack)
         {
@@ -104,6 +106,19 @@ public abstract class ContainerBox extends Component
         public ItemStack getStack()
         {
             return stack;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Slot slot = (Slot) o;
+            return slotX == slot.slotX && slotY == slot.slotY && Objects.equal(stack, slot.stack);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(slotX, slotY, stack);
         }
     }
 }

@@ -3,16 +3,12 @@ package com.mrcrayfish.device.programs.gitweb.module;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
-import net.minecraft.client.Minecraft;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +26,7 @@ public class NavigationModule extends Module
     @Override
     public String[] getOptionalData()
     {
-        List<String> optionalData = new ArrayList<>();
+        List<String> optionalData = new ObjectArrayList<>();
         optionalData.add("color");
         for(int i = 0; i < 10; i++)
         {
@@ -48,18 +44,18 @@ public class NavigationModule extends Module
         int currentRow = 0;
         int rowItemCount = 0;
         int remainingWidth = width - 6;
-        for(int i = 0; i < navButtons.size(); i++)
+        for (Button button : navButtons)
         {
-            Button button = navButtons.get(i);
-            if(remainingWidth < button.getWidth() + rowItemCount * 3)
+            if (remainingWidth < button.getWidth() + rowItemCount * 3)
             {
-                if(rowItemCount != 0)
+                if (rowItemCount != 0)
                 {
                     currentRow++;
                     rowItemCount = 0;
                     remainingWidth = width - 6;
                 }
             }
+
             int offset = button.getWidth();
             remainingWidth -= offset;
             rowItemCount++;
@@ -78,21 +74,17 @@ public class NavigationModule extends Module
 
         int finalColor = color;
         layout.setBackground((gui, mc, x, y, width1, height, mouseX, mouseY, windowActive) ->
-        {
-            Gui.drawRect(x, y, x + width1, y + height, finalColor);
-        });
+                Gui.drawRect(x, y, x + width1, y + height, finalColor));
 
         List<Button> navButtons = createNavigationButtons(frame, data);
         int currentRow = 0;
         int rowItemCount = 0;
         int remainingWidth = width - 6;
-        for(int i = 0; i < navButtons.size(); i++)
+        for (Button button : navButtons)
         {
-            Button button = navButtons.get(i);
-            if(remainingWidth < button.getWidth() + rowItemCount * 3)
+            if (remainingWidth < button.getWidth() + rowItemCount * 3)
             {
-                if(rowItemCount != 0)
-                {
+                if (rowItemCount != 0) {
                     currentRow++;
                     rowItemCount = 0;
                     remainingWidth = width - 6;
@@ -111,7 +103,7 @@ public class NavigationModule extends Module
 
     private List<Button> createNavigationButtons(@Nullable GitWebFrame frame, Map<String, String> data)
     {
-        List<Button> navButtons = new ArrayList<>();
+        List<Button> navButtons = new ObjectArrayList<>();
         for(int i = 0; i < 10; i++)
         {
             if(data.containsKey("item-link-" + i))

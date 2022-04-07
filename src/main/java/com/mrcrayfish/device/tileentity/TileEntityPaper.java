@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.util.Constants;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -41,7 +42,7 @@ public class TileEntityPaper extends TileEntitySync
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(@NotNull NBTTagCompound compound)
     {
         super.readFromNBT(compound);
         if(compound.hasKey("print", Constants.NBT.TAG_COMPOUND))
@@ -55,7 +56,8 @@ public class TileEntityPaper extends TileEntitySync
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    @NotNull
+    public NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound)
     {
         super.writeToNBT(compound);
         if(print != null)

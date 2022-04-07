@@ -14,7 +14,7 @@ import java.util.Stack;
  */
 public class GLHelper
 {
-    public static Stack<Scissor> scissorStack = new Stack<>();
+    public static final Stack<Scissor> scissorStack = new Stack<>();
 
     public static void pushScissor(int x, int y, int width, int height)
     {
@@ -80,10 +80,10 @@ public class GLHelper
 
     public static class Scissor
     {
-        public int x;
-        public int y;
-        public int width;
-        public int height;
+        public final int x;
+        public final int y;
+        public final int width;
+        public final int height;
 
         Scissor(int x, int y, int width, int height)
         {

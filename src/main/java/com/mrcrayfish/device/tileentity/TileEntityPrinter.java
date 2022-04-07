@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.util.Constants;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -27,7 +28,7 @@ public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
 {
     private State state = IDLE;
 
-    private Deque<IPrint> printQueue = new ArrayDeque<>();
+    private final Deque<IPrint> printQueue = new ArrayDeque<>();
     private IPrint currentPrint;
 
     private int totalPrintTime;
@@ -86,7 +87,7 @@ public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(@NotNull NBTTagCompound compound)
     {
         super.readFromNBT(compound);
         if(compound.hasKey("currentPrint", Constants.NBT.TAG_COMPOUND))
@@ -122,7 +123,7 @@ public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    public @NotNull NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound)
     {
         super.writeToNBT(compound);
         compound.setInteger("totalPrintTime", totalPrintTime);
@@ -136,9 +137,7 @@ public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
         if(!printQueue.isEmpty())
         {
             NBTTagList queue = new NBTTagList();
-            printQueue.forEach(print -> {
-                queue.appendTag(IPrint.writeToTag(print));
-            });
+            printQueue.forEach(print -> queue.appendTag(IPrint.writeToTag(print)));
             compound.setTag("queue", queue);
         }
         return compound;

@@ -42,7 +42,7 @@ public class ApplicationSettings extends SystemApplication
 	private Layout layoutColorScheme;
 	private Button buttonColorSchemeApply;
 
-	private Stack<Layout> predecessor = new Stack<>();
+	private final Stack<Layout> predecessor = new Stack<>();
 
 	@Override
 	public void init(@Nullable NBTTagCompound intent)
@@ -87,7 +87,10 @@ public class ApplicationSettings extends SystemApplication
 		{
 			Settings.setShowAllApps(checkBoxShowApps.isSelected());
 			Laptop laptop = getLaptop();
-			laptop.getTaskBar().setupApplications(laptop.getApplications());
+			if(laptop != null)
+			{
+				laptop.getTaskBar().setupApplications(laptop.getApplications());
+			}
 		});
 		layoutGeneral.addComponent(checkBoxShowApps);
 
@@ -97,7 +100,14 @@ public class ApplicationSettings extends SystemApplication
 		{
 			int wallpaperX = 7;
 			int wallpaperY = 28;
-			Gui.drawRect(x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, getLaptop().getSettings().getColorScheme().getHeaderColor());
+
+			Laptop laptop = getLaptop();
+			if(laptop != null)
+			{
+				Settings settings = laptop.getSettings();
+				Gui.drawRect(x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, settings.getColorScheme().getHeaderColor());
+			}
+
 			GlStateManager.color(1.0F, 1.0F, 1.0F);
 			List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
 			mc.getTextureManager().bindTexture(wallpapers.get(getLaptop().getCurrentWallpaper()));
@@ -226,7 +236,7 @@ public class ApplicationSettings extends SystemApplication
 
 	private static class Menu extends Layout
 	{
-		private String title;
+		private final String title;
 
 		public Menu(String title)
 		{
@@ -261,9 +271,7 @@ public class ApplicationSettings extends SystemApplication
 			}
 		});
 		colorPicker.setChangeListener((oldValue, newValue) ->
-		{
-			buttonColorSchemeApply.setEnabled(true);
-		});
+				buttonColorSchemeApply.setEnabled(true));
 
 		Palette palette = new Palette(5, 5, colorPicker);
 		Layout layout = colorPicker.getLayout();

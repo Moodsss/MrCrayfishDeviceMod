@@ -22,14 +22,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 /**
- * Author: MrCrayfish
+ * Author: MrCrayfish & Moodss
  */
+@SuppressWarnings("deprecation")
 public class BlockOfficeChair extends BlockDevice.Colored
 {
     public static final PropertyEnum<Type> TYPE = PropertyEnum.create("type", Type.class);
@@ -41,41 +41,42 @@ public class BlockOfficeChair extends BlockDevice.Colored
     public BlockOfficeChair()
     {
         super(Material.ROCK);
-        this.setUnlocalizedName("office_chair");
+        this.setTranslationKey("office_chair");
         this.setRegistryName("office_chair");
         this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(BlockColored.COLOR, EnumDyeColor.RED).withProperty(TYPE, Type.LEGS));
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state)
+    public boolean isOpaqueCube(@NotNull IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isFullCube(IBlockState state)
+    public boolean isFullCube(@NotNull IBlockState state)
     {
         return false;
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
+    public @NotNull BlockFaceShape getBlockFaceShape(@NotNull IBlockAccess worldIn, @NotNull IBlockState state, @NotNull BlockPos pos, @NotNull EnumFacing face)
     {
         return BlockFaceShape.UNDEFINED;
     }
 
     @Override
-    public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
+    public boolean canBeConnectedTo(@NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull EnumFacing facing)
     {
         return false;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    @NotNull
+    public AxisAlignedBB getBoundingBox(@NotNull IBlockState state, @NotNull IBlockAccess source, @NotNull BlockPos pos)
     {
-        if(Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getRidingEntity() instanceof EntitySeat)
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(player != null && player.getRidingEntity() instanceof EntitySeat)
         {
             return EMPTY_BOX;
         }
@@ -84,13 +85,13 @@ public class BlockOfficeChair extends BlockDevice.Colored
 
     @Override
     @Nullable
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
+    public AxisAlignedBB getCollisionBoundingBox(@NotNull IBlockState blockState, @NotNull IBlockAccess worldIn, @NotNull BlockPos pos)
     {
         return SEAT_BOUNDING_BOX;
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer playerIn, @NotNull EnumHand hand, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if(!worldIn.isRemote)
         {
@@ -101,12 +102,13 @@ public class BlockOfficeChair extends BlockDevice.Colored
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(@NotNull World world, @NotNull IBlockState state)
     {
         return new TileEntityOfficeChair();
     }
 
     @Override
+    @NotNull
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, FACING, BlockColored.COLOR, TYPE);
@@ -117,6 +119,7 @@ public class BlockOfficeChair extends BlockDevice.Colored
         LEGS, SEAT, FULL;
 
         @Override
+        @NotNull
         public String getName()
         {
             return name().toLowerCase();

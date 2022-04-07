@@ -1,18 +1,16 @@
 package com.mrcrayfish.device.recipe;
 
 import com.mrcrayfish.device.Reference;
-import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.item.ItemMotherboard;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Author: MrCrayfish
@@ -25,7 +23,7 @@ public class RecipeMotherboard extends net.minecraftforge.registries.IForgeRegis
     }
 
     @Override
-    public boolean matches(InventoryCrafting inv, World worldIn)
+    public boolean matches(InventoryCrafting inv, @NotNull World worldIn)
     {
         ItemStack motherboard = ItemStack.EMPTY;
         ItemStack component = ItemStack.EMPTY;
@@ -58,6 +56,7 @@ public class RecipeMotherboard extends net.minecraftforge.registries.IForgeRegis
     }
 
     @Override
+    @NotNull
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
         ItemStack motherboard = ItemStack.EMPTY;
@@ -71,18 +70,22 @@ public class RecipeMotherboard extends net.minecraftforge.registries.IForgeRegis
                 if(stack.getItem() == DeviceItems.COMPONENT_MOTHERBOARD)
                 {
                     if(!motherboard.isEmpty())
-                        return null;
+                    {
+                        return ItemStack.EMPTY;
+                    }
                     motherboard = stack;
                 }
                 else if(stack.getItem() instanceof ItemMotherboard.Component)
                 {
                     if(!component.isEmpty())
-                        return null;
+                    {
+                        return ItemStack.EMPTY;
+                    }
                     component = stack;
                 }
                 else
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
         }
@@ -93,9 +96,9 @@ public class RecipeMotherboard extends net.minecraftforge.registries.IForgeRegis
             if(originalTag != null && originalTag.hasKey("components", Constants.NBT.TAG_COMPOUND))
             {
                 NBTTagCompound tag = originalTag.getCompoundTag("components");
-                if(tag.hasKey(component.getUnlocalizedName().substring(5), Constants.NBT.TAG_BYTE))
+                if(tag.hasKey(component.getTranslationKey().substring(5), Constants.NBT.TAG_BYTE))
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
 
@@ -114,12 +117,12 @@ public class RecipeMotherboard extends net.minecraftforge.registries.IForgeRegis
                 }
 
                 NBTTagCompound components = itemTag.getCompoundTag("components");
-                components.setByte(component.getUnlocalizedName().substring(5), (byte) 0);
+                components.setByte(component.getTranslationKey().substring(5), (byte) 0);
                 return result;
             }
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -129,6 +132,7 @@ public class RecipeMotherboard extends net.minecraftforge.registries.IForgeRegis
     }
 
     @Override
+    @NotNull
     public ItemStack getRecipeOutput()
     {
         return ItemStack.EMPTY;

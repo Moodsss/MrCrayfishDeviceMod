@@ -115,8 +115,8 @@ public class ApplicationIcons extends Application
 
     public static class IconSet
     {
-        private String name;
-        private Enum<? extends IIcon>[] icons;
+        private final String name;
+        private final Enum<? extends IIcon>[] icons;
 
         public IconSet(String name, Enum<? extends IIcon>[] icons)
         {

@@ -11,9 +11,9 @@ import java.util.UUID;
  */
 public class Drive
 {
-    private String name;
-    private UUID uuid;
-    private Type type;
+    private final String name;
+    private final UUID uuid;
+    private final Type type;
     private Folder root;
 
     private boolean synced = false;

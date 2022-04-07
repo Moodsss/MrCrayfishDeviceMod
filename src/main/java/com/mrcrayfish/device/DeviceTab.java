@@ -4,6 +4,7 @@ import com.mrcrayfish.device.init.DeviceBlocks;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class DeviceTab extends CreativeTabs 
 {
@@ -13,7 +14,8 @@ public class DeviceTab extends CreativeTabs
 	}
 
 	@Override
-	public ItemStack getTabIconItem() 
+	@NotNull
+	public ItemStack createIcon()
 	{
 		return new ItemStack(DeviceBlocks.LAPTOP, 1, EnumDyeColor.RED.getMetadata());
 	}

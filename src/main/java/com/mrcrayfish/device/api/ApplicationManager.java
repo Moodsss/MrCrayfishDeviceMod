@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.object.AppInfo;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -58,7 +59,7 @@ public final class ApplicationManager
 
 	public static List<AppInfo> getAllApplications()
 	{
-		return new ArrayList<>(APP_INFO.values());
+		return new ObjectArrayList<>(APP_INFO.values());
 	}
 
 	@Nullable

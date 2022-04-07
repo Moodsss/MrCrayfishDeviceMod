@@ -10,6 +10,7 @@ import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
 import com.mrcrayfish.device.programs.system.SystemApplication;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -18,7 +19,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -30,12 +30,12 @@ public class TaskBar
 	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
 	public static final int BAR_HEIGHT = 18;
 
-	private Laptop laptop;
+	private final Laptop laptop;
 	
-	private int offset = 0;
-	private int pingTimer = 0;
+	private final int offset = 0;
+	private final int pingTimer = 0;
 
-	private List<TrayItem> trayItems = new ArrayList<>();
+	private final List<TrayItem> trayItems = new ObjectArrayList<>();
 
 	public TaskBar(Laptop laptop)
 	{

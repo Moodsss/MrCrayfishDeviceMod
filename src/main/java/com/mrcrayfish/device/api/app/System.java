@@ -5,7 +5,6 @@ import com.mrcrayfish.device.core.Settings;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.nbt.NBTTagCompound;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**

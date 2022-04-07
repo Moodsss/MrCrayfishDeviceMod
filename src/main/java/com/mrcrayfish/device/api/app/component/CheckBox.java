@@ -5,14 +5,13 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
 public class CheckBox extends Component implements RadioGroup.Item
 {
-	protected String name;
+	protected final String name;
 	protected boolean checked = false;
 	protected RadioGroup group = null;
 	

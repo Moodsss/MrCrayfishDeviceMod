@@ -17,14 +17,22 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.resource.IResourceType;
+import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -35,9 +43,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
-public class ClientProxy extends CommonProxy implements IResourceManagerReloadListener
+@SideOnly(Side.CLIENT)
+public class ClientProxy extends CommonProxy implements ISelectiveResourceReloadListener
 {
+    private static final Logger LOGGER = LogManager.getLogger("CDM-Client");
+
     @Override
     public void preInit()
     {
@@ -76,77 +88,80 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
         generateIconAtlas();
     }
 
+    /**
+     * Had to recreate this, kept crashing harshly.
+     */
     private void generateIconAtlas()
     {
-        final int ICON_SIZE = 14;
+        Minecraft minecraft = Minecraft.getMinecraft();
+        final int maxIconSize = 14;
         int index = 0;
 
-        BufferedImage atlas = new BufferedImage(ICON_SIZE * 16, ICON_SIZE * 16, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = atlas.createGraphics();
+        BufferedImage atlas = new BufferedImage(maxIconSize * 16, maxIconSize * 16, BufferedImage.TYPE_INT_ARGB);
+        Graphics graphics = atlas.createGraphics();
 
-        try
+        try(IResource resource = minecraft.getResourceManager().getResource(new ResourceLocation(Reference.MOD_ID, "textures/app/icon/missing.png")))
         {
-            BufferedImage icon = TextureUtil.readBufferedImage(ClientProxy.class.getResourceAsStream("/assets/" + Reference.MOD_ID + "/textures/app/icon/missing.png"));
-            g.drawImage(icon, 0, 0, ICON_SIZE, ICON_SIZE, null);
+            BufferedImage icon = TextureUtil.readBufferedImage(resource.getInputStream());
+            graphics.drawImage(icon, 0, 0, maxIconSize, maxIconSize, null);
         }
-        catch(IOException e)
+        catch (IOException ex)
         {
-            e.printStackTrace();
+            LOGGER.error("Unable to fetch missing base icon texture", ex);
         }
-
         index++;
 
         for(AppInfo info : ApplicationManager.getAllApplications())
         {
             if(info.getIcon() == null)
-                continue;
-
-            ResourceLocation identifier = info.getId();
-            ResourceLocation iconResource = new ResourceLocation(info.getIcon());
-            String path = "/assets/" + iconResource.getResourceDomain() + "/" + iconResource.getResourcePath();
-            try
             {
-                InputStream input = ClientProxy.class.getResourceAsStream(path);
-                if(input != null)
+                continue;
+            }
+
+            ResourceLocation path = new ResourceLocation(info.getIcon());
+            try(IResource resource = minecraft.getResourceManager().getResource(path))
+            {
+                BufferedImage icon = TextureUtil.readBufferedImage(resource.getInputStream());
+                if(icon != null)
                 {
-                    BufferedImage icon = TextureUtil.readBufferedImage(input);
-                    if(icon.getWidth() != ICON_SIZE || icon.getHeight() != ICON_SIZE)
+                    if(icon.getWidth() != maxIconSize || icon.getHeight() != maxIconSize)
                     {
-                        MrCrayfishDeviceMod.getLogger().error("Incorrect icon size for " + identifier.toString() + " (Must be 14 by 14 pixels)");
+                        LOGGER.error("Incorrect icon size for " + info.getId() + " (Must be 14 by 14 pixels)");
                         continue;
                     }
-                    int iconU = (index % 16) * ICON_SIZE;
-                    int iconV = (index / 16) * ICON_SIZE;
-                    g.drawImage(icon, iconU, iconV, ICON_SIZE, ICON_SIZE, null);
+
+                    int iconU = (index % 16) * maxIconSize;
+                    int iconV = (index / 16) * maxIconSize;
+                    graphics.drawImage(icon, iconU, iconV, maxIconSize, maxIconSize, null);
                     updateIcon(info, iconU, iconV);
                     index++;
                 }
                 else
                 {
-                    MrCrayfishDeviceMod.getLogger().error("Icon for application '" + identifier.toString() +  "' could not be found at '" + path + "'");
+                    LOGGER.error("Icon for application '{}' could not be found at '{}'", info.getId(), path);
                 }
             }
-            catch(Exception e)
+            catch(IOException ex)
             {
-                MrCrayfishDeviceMod.getLogger().error("Unable to load icon for " + identifier.toString());
+                LOGGER.error("Unable to load icon for application {} as it cannot be found", info.getId(), ex);
             }
         }
 
-        g.dispose();
-        Minecraft.getMinecraft().getTextureManager().loadTexture(Laptop.ICON_TEXTURES, new DynamicTexture(atlas));
+        graphics.dispose();
+        minecraft.getTextureManager().loadTexture(Laptop.ICON_TEXTURES, new DynamicTexture(atlas));
     }
 
     private void updateIcon(AppInfo info, int iconU, int iconV)
     {
-        ReflectionHelper.setPrivateValue(AppInfo.class, info, iconU, "iconU");
-        ReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
+        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconU, "iconU");
+        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
     }
 
     @Nullable
     @Override
     public Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
     {
-        if("minecraft".equals(identifier.getResourceDomain()))
+        if("minecraft".equals(identifier.getNamespace()))
         {
             throw new IllegalArgumentException("Invalid identifier domain");
         }
@@ -154,7 +169,7 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
         try
         {
             Application application = clazz.newInstance();
-            java.util.List<Application> APPS = ReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
+            java.util.List<Application> APPS = ObfuscationReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
             APPS.add(application);
 
             Field field = Application.class.getDeclaredField("info");
@@ -176,7 +191,7 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
         return null;
     }
 
-    @Nullable
+    @NotNull
     private AppInfo generateAppInfo(ResourceLocation identifier, Class<? extends Application> clazz)
     {
         AppInfo info = new AppInfo(identifier, SystemApplication.class.isAssignableFrom(clazz));
@@ -195,11 +210,11 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
             try
             {
                 IPrint.Renderer renderer = classRenderer.newInstance();
-                Map<String, IPrint.Renderer> idToRenderer = ReflectionHelper.getPrivateValue(PrintingManager.class, null, "registeredRenders");
+                Map<String, IPrint.Renderer> idToRenderer = ObfuscationReflectionHelper.getPrivateValue(PrintingManager.class, null, "registeredRenders");
                 if(idToRenderer == null)
                 {
                     idToRenderer = new HashMap<>();
-                    ReflectionHelper.setPrivateValue(PrintingManager.class, null, idToRenderer, "registeredRenders");
+                    ObfuscationReflectionHelper.setPrivateValue(PrintingManager.class, null, idToRenderer, "registeredRenders");
                 }
                 idToRenderer.put(identifier.toString(), renderer);
             }
@@ -218,12 +233,15 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
     }
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager)
+    public void onResourceManagerReload(@NotNull IResourceManager resourceManager, @NotNull Predicate<IResourceType> resourcePredicate)
     {
-        if(ApplicationManager.getAllApplications().size() > 0)
+        if(resourcePredicate.test(VanillaResourceType.TEXTURES))
         {
-            ApplicationManager.getAllApplications().forEach(AppInfo::reload);
-            generateIconAtlas();
+            if(ApplicationManager.getAllApplications().size() > 0)
+            {
+                ApplicationManager.getAllApplications().forEach(AppInfo::reload);
+                generateIconAtlas();
+            }
         }
     }
 

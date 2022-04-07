@@ -7,11 +7,11 @@ import com.mrcrayfish.device.programs.system.task.TaskAdd;
 import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
 import com.mrcrayfish.device.programs.system.task.TaskPay;
 import com.mrcrayfish.device.programs.system.task.TaskRemove;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,7 +30,7 @@ public class BankUtil
 {
 	public static final BankUtil INSTANCE = new BankUtil();
 	
-	private Map<UUID, Account> uuidToAccount = new HashMap<UUID, Account>();
+	private final Map<UUID, Account> uuidToAccount = new Object2ObjectOpenHashMap<>();
 	
 	private BankUtil() {}
 	

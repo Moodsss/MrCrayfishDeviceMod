@@ -12,6 +12,7 @@ import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class Canvas extends Component 
 {
@@ -31,7 +32,7 @@ public class Canvas extends Component
 	
 	public Picture picture;
 	
-	private int gridColor = new Color(200, 200, 200, 150).getRGB();
+	private final int gridColor = new Color(200, 200, 200, 150).getRGB();
 	
 	public Canvas(int left, int top)
 	{
@@ -175,7 +176,7 @@ public class Canvas extends Component
 	
 	public void compileColor()
 	{
-		 this.currentColor = ((255 & 0xFF) << 24) | ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 0);
+		 this.currentColor = ((0xFF) << 24) | ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF));
 	}
 	
 	public int getCurrentColor()
@@ -196,10 +197,7 @@ public class Canvas extends Component
 	public int[] copyPixels()
 	{
 		int[] copiedPixels = new int[pixels.length];
-		for(int i = 0; i < pixels.length; i++)
-		{
-			copiedPixels[i] = pixels[i];
-		}
+		System.arraycopy(pixels, 0, copiedPixels, 0, pixels.length);
 		return copiedPixels;
 	}
 	
@@ -207,10 +205,7 @@ public class Canvas extends Component
 	{
 		if(pixels != null)
 		{
-			for(int i = 0; i < pixels.length; i++)
-			{
-				pixels[i] = 0;
-			}
+			Arrays.fill(pixels, 0);
 		}
 	}
 }

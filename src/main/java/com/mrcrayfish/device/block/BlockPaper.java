@@ -22,13 +22,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
- * Author: MrCrayfish
+ * Author: MrCrayfish & Moodss
  */
+@SuppressWarnings("deprecation")
 public class BlockPaper extends BlockHorizontal implements ITileEntityProvider
 {
     private static final Bounds SELECTION_BOUNDS = new Bounds(15 * 0.0625, 0.0, 0.0, 16 * 0.0625, 16 * 0.0625, 16 * 0.0625);
@@ -41,45 +43,47 @@ public class BlockPaper extends BlockHorizontal implements ITileEntityProvider
     public BlockPaper()
     {
         super(Material.CLOTH);
-        this.setUnlocalizedName("paper");
+        this.setTranslationKey("paper");
         this.setRegistryName("paper");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state)
+    public boolean isOpaqueCube(@NotNull IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isFullCube(IBlockState state)
+    public boolean isFullCube(@NotNull IBlockState state)
     {
         return false;
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    @NotNull
+    public AxisAlignedBB getBoundingBox(IBlockState state, @NotNull IBlockAccess source, @NotNull BlockPos pos)
     {
         return SELECTION_BOUNDING_BOX[state.getValue(FACING).getHorizontalIndex()];
     }
 
     @Nullable
     @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
+    public AxisAlignedBB getCollisionBoundingBox(@NotNull IBlockState blockState, @NotNull IBlockAccess worldIn, @NotNull BlockPos pos)
     {
         return null;
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+    @NotNull
+    public IBlockState getStateForPlacement(@NotNull World world, @NotNull BlockPos pos, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ, int meta, @NotNull EntityLivingBase placer, @NotNull EnumHand hand)
     {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
         return state.withProperty(FACING, placer.getHorizontalFacing());
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer playerIn, @NotNull EnumHand hand, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if(!worldIn.isRemote)
         {
@@ -94,13 +98,14 @@ public class BlockPaper extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
+    @NotNull
+    public Item getItemDropped(@NotNull IBlockState state, @NotNull Random rand, int fortune)
     {
         return null;
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+    public boolean removedByPlayer(@NotNull IBlockState state, World world, @NotNull BlockPos pos, @NotNull EntityPlayer player, boolean willHarvest)
     {
         if(!world.isRemote && !player.capabilities.isCreativeMode)
         {
@@ -116,7 +121,7 @@ public class BlockPaper extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
-    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
+    public boolean eventReceived(@NotNull IBlockState state, World worldIn, @NotNull BlockPos pos, int id, int param)
     {
         TileEntity tileentity = worldIn.getTileEntity(pos);
         return tileentity != null && tileentity.receiveClientEvent(id, param);
@@ -129,25 +134,29 @@ public class BlockPaper extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
+    @NotNull
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+        return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
     }
 
     @Override
+    @NotNull
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, FACING);
     }
 
-    public EnumBlockRenderType getRenderType(IBlockState state)
+    @Override
+    @NotNull
+    public EnumBlockRenderType getRenderType(@NotNull IBlockState state)
     {
         return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
+    public TileEntity createNewTileEntity(@NotNull World worldIn, int meta)
     {
         return new TileEntityPaper();
     }

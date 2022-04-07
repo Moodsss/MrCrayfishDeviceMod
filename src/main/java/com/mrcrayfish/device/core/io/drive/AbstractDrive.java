@@ -94,11 +94,8 @@ public abstract class AbstractDrive
                             if(destination != null)
                             {
                                 ServerFolder temp = destination;
-                                while(true)
-                                {
-                                    if(temp == null)
-                                        break;
-                                    if(temp == file)
+                                while (temp != null) {
+                                    if (temp == file)
                                         return FileSystem.createResponse(FileSystem.Status.FAILED, "Destination folder can't be a subfolder");
                                     temp = temp.getParent();
                                 }
@@ -184,6 +181,6 @@ public abstract class AbstractDrive
 
     public enum Type
     {
-        INTERNAL, EXTERNAL, NETWORK;
+        INTERNAL, EXTERNAL, NETWORK
     }
 }

@@ -10,25 +10,26 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
 
 public class Player
 {
 	private static final ResourceLocation boatTextures = new ResourceLocation("textures/entity/boat.png");
 	
-	private Game game;
+	private final Game game;
 	
 	private double posX, posY;
 	private double posXPrev, posYPrev;
 	private double speed;
 	private int rotation, rotationPrev;
-	private Vec2d direction;
-	private Vec2d velocity;
+	private final Vec2d direction;
+	private final Vec2d velocity;
 	
-	private ModelBoat boatModel;
-	private ModelDummyPlayer playerModel;
+	private final ModelBoat boatModel;
+	private final ModelDummyPlayer playerModel;
 	
-	boolean canMove = false;
+	final boolean canMove = false;
 	
 	public Player(Game game)
 	{
@@ -86,7 +87,7 @@ public class Player
 		velocity.x = direction.x * speed;
 		velocity.y = direction.y * speed;
 		
-		if(canMove = canMove())
+		if(canMove == canMove())
 		{
 			this.posX += velocity.x;
 			this.posY += velocity.y;
@@ -102,8 +103,7 @@ public class Player
 		if(posX + velocity.x <= 0) return false;
 		if(posY + velocity.y <= 0) return false;
 		if(posX + velocity.x >= game.mapWidth * Tile.WIDTH) return false;
-		if(posY + velocity.y >= game.mapHeight * Tile.HEIGHT) return false;
-		return true;
+		return !(posY + velocity.y >= game.mapHeight * Tile.HEIGHT);
 	}
 	
 	public int getPosX()
@@ -125,19 +125,19 @@ public class Player
         
         GlStateManager.pushMatrix();
 		GlStateManager.translate((float) px, (float) py, 3.0F);
-		GlStateManager.scale((float) (-scale), (float) -scale, (float) -scale);
+		GlStateManager.scale(-scale, -scale, -scale);
 		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F); //Flips boat up
 		GlStateManager.rotate(90F, 1, 0, 0);
 		GlStateManager.translate(0.0F, -3F, 0.0F);
 		GlStateManager.rotate(-20F, 1.0F, 0.0F, 0.0F);
 		GlStateManager.rotate(rot, 0.0F, 1.0F, 0.0F);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(boatTextures);
-		boatModel.render((Entity) null, 0F, 0F, 0F, 0F, 0F, 1F);
+		boatModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F);
 		GlStateManager.popMatrix();
 		
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float) px, (float) py, 3.0F);
-		GlStateManager.scale((float) (-scale), (float) scale, (float) scale);
+		GlStateManager.scale(-scale, scale, scale);
 		// //Flips boat up
 		GlStateManager.rotate(90F, 1, 0, 0);
 		GlStateManager.translate(0.0F, 5.0F, 0.0F);
@@ -146,20 +146,20 @@ public class Player
 		GlStateManager.rotate(rot - 90F, 0.0F, 1.0F, 0.0F);
 		GlStateManager.translate(0F, -12F, 5F);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
-		playerModel.render((Entity) null, 0F, 0F, 0F, 0F, 0F, 1F);
+		playerModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F);
 		GlStateManager.popMatrix();
 	}
 	
 	public static class ModelDummyPlayer extends ModelBiped
 	{
-		public ModelRenderer bipedLeftArmwear;
-		public ModelRenderer bipedRightArmwear;
-		public ModelRenderer bipedLeftLegwear;
-		public ModelRenderer bipedRightLegwear;
-		public ModelRenderer bipedBodyWear;
-		private ModelRenderer bipedCape;
-		private ModelRenderer bipedDeadmau5Head;
-		private boolean smallArms;
+		public final ModelRenderer bipedLeftArmwear;
+		public final ModelRenderer bipedRightArmwear;
+		public final ModelRenderer bipedLeftLegwear;
+		public final ModelRenderer bipedRightLegwear;
+		public final ModelRenderer bipedBodyWear;
+		private final ModelRenderer bipedCape;
+		private final ModelRenderer bipedDeadmau5Head;
+		private final boolean smallArms;
 
 		public ModelDummyPlayer(float scale, boolean slim)
 		{
@@ -213,7 +213,7 @@ public class Player
 			this.bipedBodyWear.setRotationPoint(0.0F, 0.0F, 0.0F);
 		}
 
-		public void render(Entity entityIn, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float scale)
+		public void render(@NotNull Entity entityIn, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float scale)
 		{
 			this.setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale, entityIn);
 			GlStateManager.pushMatrix();
@@ -234,7 +234,7 @@ public class Player
 			GlStateManager.popMatrix();
 		}
 		
-		public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity entityIn)
+		public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, @NotNull Entity entityIn)
 		{
 			super.setRotationAngles(p_78087_1_, p_78087_2_, p_78087_3_, p_78087_4_, p_78087_5_, p_78087_6_, entityIn);
 			copyModelAngles(this.bipedLeftLeg, this.bipedLeftLegwear);

@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -110,7 +111,7 @@ public abstract class TileEntityNetworkDevice extends TileEntityDevice implement
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    public @NotNull NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound)
     {
         super.writeToNBT(compound);
         if(connection != null)
@@ -121,7 +122,7 @@ public abstract class TileEntityNetworkDevice extends TileEntityDevice implement
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(@NotNull NBTTagCompound compound)
     {
         super.readFromNBT(compound);
         if(compound.hasKey("connection", Constants.NBT.TAG_COMPOUND))
@@ -135,7 +136,7 @@ public abstract class TileEntityNetworkDevice extends TileEntityDevice implement
         private EnumDyeColor color = EnumDyeColor.RED;
 
         @Override
-        public void readFromNBT(NBTTagCompound compound)
+        public void readFromNBT(@NotNull NBTTagCompound compound)
         {
             super.readFromNBT(compound);
             if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
@@ -145,7 +146,7 @@ public abstract class TileEntityNetworkDevice extends TileEntityDevice implement
         }
 
         @Override
-        public NBTTagCompound writeToNBT(NBTTagCompound compound)
+        public @NotNull NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound)
         {
             super.writeToNBT(compound);
             compound.setByte("color", (byte) color.getMetadata());

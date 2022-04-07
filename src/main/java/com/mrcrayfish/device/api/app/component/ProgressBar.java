@@ -8,7 +8,8 @@ import java.awt.*;
 
 public class ProgressBar extends Component 
 {
-	protected int width, height;
+	protected final int width;
+	protected final int height;
 	protected int progress = 0;
 	protected int max = 100;
 	

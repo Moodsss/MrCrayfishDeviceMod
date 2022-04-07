@@ -85,7 +85,8 @@ public class PaperRenderer extends TileEntitySpecialRenderer<TileEntityPaper>
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         drawQuad(x + (1 - width), y, z, x + width + (1 - width), y + height, z, EnumFacing.NORTH);
         drawQuad(x + 1, y, z, x + 1, y + height, z + depth, EnumFacing.EAST);
-        drawQuad(x + width + 1 - (width + width), y, z + depth, x + width + 1 - (width + width), y + height, z, EnumFacing.WEST);
+        double xFrom = x + width + 1 - (width + width);
+        drawQuad(xFrom, y, z + depth, xFrom, y + height, z, EnumFacing.WEST);
         drawQuad(x + (1 - width), y, z + depth, x + width + (1 - width), y, z, EnumFacing.DOWN);
         drawQuad(x + (1 - width), y + height, z, x + width + (1 - width), y, z + depth, EnumFacing.UP);
         GlStateManager.disableRescaleNormal();

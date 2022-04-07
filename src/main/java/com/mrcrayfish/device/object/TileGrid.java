@@ -5,17 +5,16 @@ import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.tiles.Tile;
 import com.mrcrayfish.device.object.tiles.Tile.Category;
 import com.mrcrayfish.device.util.GuiHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TileGrid extends Component
@@ -25,14 +24,14 @@ public class TileGrid extends Component
 	private Button btnPrevCategory;
 	
 	private int currentCategory;
-	private List<Tile> tabTiles;
-	private Game game;
+	private final List<Tile> tabTiles;
+	private final Game game;
 	
 	public TileGrid(int left, int top, Game game)
 	{
 		super(left, top);
 		this.currentCategory = 0;
-		this.tabTiles = new ArrayList<Tile>();
+		this.tabTiles = new ObjectArrayList<>();
 		this.game = game;
 	}
 	
@@ -44,32 +43,22 @@ public class TileGrid extends Component
 		
 		btnNextCategory = new Button(left + 81, top, Icons.CHEVRON_RIGHT);
 		btnNextCategory.setPadding(1);
-		btnNextCategory.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(int mouseX, int mouseY, int mouseButton)
+		btnNextCategory.setClickListener((mouseX, mouseY, mouseButton) -> {
+			if(currentCategory < Category.values().length - 1)
 			{
-				if(currentCategory < Tile.Category.values().length - 1)
-				{
-					currentCategory++;
-					updateTiles();
-				}
+				currentCategory++;
+				updateTiles();
 			}
 		});
 		layout.addComponent(btnNextCategory);
 		
 		btnPrevCategory = new Button(left, top, Icons.CHEVRON_LEFT);
 		btnPrevCategory.setPadding(1);
-		btnPrevCategory.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(int mouseX, int mouseY, int mouseButton)
+		btnPrevCategory.setClickListener((mouseX, mouseY, mouseButton) -> {
+			if(currentCategory > 0)
 			{
-				if(currentCategory > 0)
-				{
-					currentCategory--;
-					updateTiles();
-				}
+				currentCategory--;
+				updateTiles();
 			}
 		});
 		layout.addComponent(btnPrevCategory);
@@ -100,7 +89,7 @@ public class TileGrid extends Component
 			GlStateManager.popAttrib();
 		}
 
-		if(GuiHelper.isMouseInside(mouseX, mouseX, xPosition, yPosition, xPosition + 60, yPosition + 60))
+		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + 60, yPosition + 60))
 		{
 			for(int i = 0; i < tabTiles.size(); i++)
 			{

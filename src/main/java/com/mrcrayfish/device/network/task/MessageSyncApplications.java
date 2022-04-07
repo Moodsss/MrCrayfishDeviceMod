@@ -6,11 +6,11 @@ import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.proxy.CommonProxy;
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class MessageSyncApplications implements IMessage, IMessageHandler<Messag
     @Override
     public MessageSyncApplications onMessage(MessageSyncApplications message, MessageContext ctx)
     {
-        ReflectionHelper.setPrivateValue(CommonProxy.class, MrCrayfishDeviceMod.proxy, message.allowedApps, "allowedApps");
+        ObfuscationReflectionHelper.setPrivateValue(CommonProxy.class, MrCrayfishDeviceMod.proxy, message.allowedApps, "allowedApps");
         return null;
     }
 }

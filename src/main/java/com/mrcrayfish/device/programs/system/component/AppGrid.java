@@ -14,12 +14,12 @@ import com.mrcrayfish.device.programs.system.object.AppEntry;
 import com.mrcrayfish.device.programs.system.object.LocalEntry;
 import com.mrcrayfish.device.programs.system.object.RemoteEntry;
 import com.mrcrayfish.device.util.GuiHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,14 +27,14 @@ import java.util.List;
  */
 public class AppGrid extends Component
 {
-    private int padding = 5;
-    private int horizontalItems;
-    private int verticalItems;
-    private List<AppEntry> entries = new ArrayList<>();
-    private ApplicationAppStore store;
+    private final int padding = 5;
+    private final int horizontalItems;
+    private final int verticalItems;
+    private final List<AppEntry> entries = new ObjectArrayList<>();
+    private final ApplicationAppStore store;
 
-    private int itemWidth;
-    private int itemHeight;
+    private final int itemWidth;
+    private final int itemHeight;
 
     private long lastClick = 0;
     private int clickedIndex;
@@ -141,7 +141,7 @@ public class AppGrid extends Component
         {
             RemoteEntry remoteEntry = (RemoteEntry) entry;
             ResourceLocation resource = new ResourceLocation(remoteEntry.getId());
-            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getResourceDomain() + "/" + resource.getResourcePath() + "/icon.png");
+            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/icon.png");
             layout.addComponent(image);
         }
 

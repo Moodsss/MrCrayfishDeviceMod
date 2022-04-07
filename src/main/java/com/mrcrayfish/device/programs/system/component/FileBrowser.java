@@ -25,6 +25,7 @@ import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -37,7 +38,6 @@ import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
 import java.lang.System;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -100,7 +100,7 @@ public class FileBrowser extends Component
     private Layout layoutLoading;
     private Spinner spinnerLoading;
 
-    private Stack<Folder> predecessor = new Stack<>();
+    private final Stack<Folder> predecessor = new Stack<>();
     private Drive currentDrive;
     private Folder currentFolder;
 
@@ -317,9 +317,7 @@ public class FileBrowser extends Component
 
         comboBoxDrive = new ComboBox.List<>(26, 3, 44, 100, new Drive[]{});
         comboBoxDrive.setChangeListener((oldValue, newValue) ->
-        {
-            openDrive(newValue);
-        });
+                openDrive(newValue));
         comboBoxDrive.setListItemRenderer(new ListItemRenderer<Drive>(12)
         {
             @Override
@@ -347,9 +345,7 @@ public class FileBrowser extends Component
 
         layoutLoading = new Layout(mode.getOffset(), 25, fileList.getWidth(), fileList.getHeight());
         layoutLoading.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-        {
-            Gui.drawRect(x, y, x + width, y + height, Window.Color_WINDOW_DARK);
-        });
+                Gui.drawRect(x, y, x + width, y + height, Window.Color_WINDOW_DARK));
         layoutLoading.setVisible(false);
 
         spinnerLoading = new Spinner((layoutLoading.width - 12) / 2, (layoutLoading.height - 12) / 2);
@@ -548,7 +544,7 @@ public class FileBrowser extends Component
 
     private void pushPredecessors(Folder folder)
     {
-        List<Folder> predecessors = new ArrayList<>();
+        List<Folder> predecessors = new ObjectArrayList<>();
         Folder temp = folder.getParent();
         while(temp != null)
         {
@@ -556,7 +552,7 @@ public class FileBrowser extends Component
             temp = temp.getParent();
         }
         Collections.reverse(predecessors);
-        predecessors.forEach(f -> predecessor.push(f));
+        predecessors.forEach(predecessor::push);
         if(predecessor.size() > 0)
         {
             btnPreviousFolder.setEnabled(true);
@@ -874,10 +870,7 @@ public class FileBrowser extends Component
         {
             if(clipboardFile instanceof Folder)
             {
-                if(predecessor.contains(clipboardFile) || currentFolder == clipboardFile)
-                {
-                    return false;
-                }
+                return !predecessor.contains(clipboardFile) && currentFolder != clipboardFile;
             }
         }
         return true;

@@ -1,11 +1,9 @@
 package com.mrcrayfish.device.programs.system.layout;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
-import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.AppInfo;
@@ -18,7 +16,6 @@ import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -34,7 +31,7 @@ public class LayoutSearchApps extends StandardLayout
 
     private long lastClick = 0;
 
-    private ApplicationAppStore appStore;
+    private final ApplicationAppStore appStore;
 
     public LayoutSearchApps(ApplicationAppStore appStore, Layout previous)
     {
@@ -97,9 +94,7 @@ public class LayoutSearchApps extends StandardLayout
         app.setCurrentLayout(layout);
         Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
         btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->
-        {
-            app.setCurrentLayout(this);
-        });
+                app.setCurrentLayout(this));
         layout.addComponent(btnPrevious);
     }
 }

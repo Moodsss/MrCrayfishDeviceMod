@@ -10,17 +10,17 @@ import java.awt.*;
 
 public class ColorGrid extends Component
 {
-	private static Color[] colors = { Color.BLACK, Color.GRAY, Color.LIGHT_GRAY, Color.WHITE, Color.RED, Color.ORANGE, Color.YELLOW,
+	private static final Color[] colors = { Color.BLACK, Color.GRAY, Color.LIGHT_GRAY, Color.WHITE, Color.RED, Color.ORANGE, Color.YELLOW,
 			Color.GREEN, new Color(0, 150, 0), new Color(0, 255, 255), new Color(0, 148, 255), Color.BLUE, new Color(72, 0, 255), Color.MAGENTA, new Color(255, 0, 110) };
 	
-	private int hoverColor = new Color(255, 255, 255, 100).getRGB();
+	private final int hoverColor = new Color(255, 255, 255, 100).getRGB();
 	
-	private Canvas canvas;
-	private Slider redSlider;
-	private Slider greenSlider;
-	private Slider blueSlider;
+	private final Canvas canvas;
+	private final Slider redSlider;
+	private final Slider greenSlider;
+	private final Slider blueSlider;
 
-	private int width;
+	private final int width;
 	
 	public ColorGrid(int left, int top, int width, Canvas canvas, Slider redSlider, Slider greenSlider, Slider blueSlider)
 	{

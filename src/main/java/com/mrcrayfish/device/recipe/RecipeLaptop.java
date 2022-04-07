@@ -10,6 +10,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Author: MrCrayfish
@@ -22,7 +23,7 @@ public class RecipeLaptop extends net.minecraftforge.registries.IForgeRegistryEn
     }
 
     @Override
-    public boolean matches(InventoryCrafting inv, World worldIn)
+    public boolean matches(InventoryCrafting inv, @NotNull World worldIn)
     {
         if(inv.getStackInSlot(0).isEmpty() || inv.getStackInSlot(0).getItem() != DeviceItems.PLASTIC_FRAME)
             return false;
@@ -62,6 +63,7 @@ public class RecipeLaptop extends net.minecraftforge.registries.IForgeRegistryEn
     }
 
     @Override
+    @NotNull
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
         ItemStack dye = inv.getStackInSlot(7);
@@ -75,6 +77,7 @@ public class RecipeLaptop extends net.minecraftforge.registries.IForgeRegistryEn
     }
 
     @Override
+    @NotNull
     public ItemStack getRecipeOutput()
     {
         return ItemStack.EMPTY;

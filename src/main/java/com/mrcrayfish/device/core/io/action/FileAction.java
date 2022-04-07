@@ -9,8 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class FileAction
 {
-    private Type type;
-    private NBTTagCompound data;
+    private final Type type;
+    private final NBTTagCompound data;
 
     private FileAction(Type type, NBTTagCompound data)
     {

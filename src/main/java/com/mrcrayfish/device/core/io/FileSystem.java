@@ -17,6 +17,7 @@ import com.mrcrayfish.device.core.io.task.TaskGetMainDrive;
 import com.mrcrayfish.device.core.io.task.TaskSendAction;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,7 +30,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -46,11 +46,11 @@ public class FileSystem
 	public static final String LAPTOP_DRIVE_NAME = "Root";
 
 	private AbstractDrive mainDrive = null;
-	private Map<UUID, AbstractDrive> additionalDrives = new HashMap<>();
+	private final Map<UUID, AbstractDrive> additionalDrives = new Object2ObjectOpenHashMap<>();
 	private AbstractDrive attachedDrive = null;
 	private EnumDyeColor attachedDriveColor = EnumDyeColor.RED;
 
-	private TileEntityLaptop tileEntity;
+	private final TileEntityLaptop tileEntity;
 	
 	public FileSystem(TileEntityLaptop tileEntity, NBTTagCompound fileSystemTag)
 	{
@@ -166,7 +166,7 @@ public class FileSystem
 		if(includeMain)
 			drives.put(mainDrive.getUUID(), mainDrive);
 
-		additionalDrives.forEach(drives::put);
+		drives.putAll(additionalDrives);
 
 		if(attachedDrive != null)
 			drives.put(attachedDrive.getUUID(), attachedDrive);

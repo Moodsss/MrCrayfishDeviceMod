@@ -10,6 +10,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Author: MrCrayfish
@@ -25,6 +26,7 @@ public class ClientNotification implements IToast
     private ClientNotification() {}
 
     @Override
+    @NotNull
     public Visibility draw(GuiToast toastGui, long delta)
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F);

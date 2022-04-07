@@ -21,13 +21,13 @@ public class Window<T extends Wrappable>
 	
 	public static final int Color_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
 	
-	T content;
+	final T content;
 	int width, height;
 	int offsetX, offsetY;
 
 	final Laptop laptop;
 	Window<Dialog> dialogWindow = null;
-	Window<? extends  Wrappable> parent = null;
+	Window<? extends Wrappable> parent = null;
 	
 	protected GuiButton btnClose;
 	
@@ -254,7 +254,7 @@ public class Window<T extends Wrappable>
 		}
 		else
 		{
-			dialogWindow = new Window(dialog, null);
+			dialogWindow = new Window<>(dialog, null);
 			dialogWindow.init(0, 0, null);
 			dialogWindow.setParent(this);
 		}
@@ -287,12 +287,12 @@ public class Window<T extends Wrappable>
 		}
 	}
 
-	public void setParent(Window parent)
+	public void setParent(Window<? extends Wrappable> parent)
 	{
 		this.parent = parent;
 	}
 
-	public Window getParent()
+	public Window<? extends Wrappable> getParent()
 	{
 		return parent;
 	}

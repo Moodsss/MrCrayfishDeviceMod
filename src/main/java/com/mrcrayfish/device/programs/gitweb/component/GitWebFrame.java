@@ -45,10 +45,10 @@ public class GitWebFrame extends Component
         MODULES.put("download", new DownloadModule());
     }
 
-    private Application app;
-    private ScrollableLayout layout;
-    private int width;
-    private int height;
+    private final Application app;
+    private final ScrollableLayout layout;
+    private final int width;
+    private final int height;
 
     private boolean allowRemoteUrls = false;
     private boolean initialized = false;
@@ -387,9 +387,8 @@ public class GitWebFrame extends Component
     private static int calculateHeight(List<ModuleEntry> modules, int width)
     {
         int height = 0;
-        for(int i = 0; i < modules.size(); i++)
+        for (ModuleEntry entry : modules)
         {
-            ModuleEntry entry = modules.get(i);
             height += entry.getModule().calculateHeight(entry.getData(), width);
         }
         return height;

@@ -9,6 +9,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class TileEntityOfficeChair extends TileEntitySync implements IColored
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(@NotNull NBTTagCompound compound)
     {
         super.readFromNBT(compound);
         if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
@@ -42,7 +43,8 @@ public class TileEntityOfficeChair extends TileEntitySync implements IColored
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    @NotNull
+    public NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound)
     {
         super.writeToNBT(compound);
         compound.setByte("color", (byte) color.getMetadata());

@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class RadioGroup
 {
-	protected Set<Item> group = new HashSet<>();
+	protected final Set<Item> group = new HashSet<>();
 	
 	/***
 	 * Adds an item to this group

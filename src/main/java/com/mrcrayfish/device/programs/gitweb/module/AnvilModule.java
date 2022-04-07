@@ -2,9 +2,9 @@ package com.mrcrayfish.device.programs.gitweb.module;
 
 import com.mrcrayfish.device.programs.gitweb.component.container.AnvilBox;
 import com.mrcrayfish.device.programs.gitweb.component.container.ContainerBox;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +17,7 @@ public class AnvilModule extends ContainerModule
     @Override
     public String[] getOptionalData()
     {
-        List<String> optionalData = new ArrayList<>();
-        optionalData.addAll(Arrays.asList(super.getOptionalData()));
+        List<String> optionalData = new ObjectArrayList<>(Arrays.asList(super.getOptionalData()));
         optionalData.add("slot-1");
         optionalData.add("slot-2");
         optionalData.add("slot-result");

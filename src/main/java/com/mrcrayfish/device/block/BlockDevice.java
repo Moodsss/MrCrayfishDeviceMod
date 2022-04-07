@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.block;
 
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
-import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import com.mrcrayfish.device.util.IColored;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockHorizontal;
@@ -24,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -31,6 +31,7 @@ import java.util.Random;
 /**
  * Author: MrCrayfish
  */
+@SuppressWarnings("deprecation")
 public abstract class BlockDevice extends BlockHorizontal
 {
     protected BlockDevice(Material materialIn)
@@ -40,47 +41,50 @@ public abstract class BlockDevice extends BlockHorizontal
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state)
+    public boolean isOpaqueCube(@NotNull IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isFullCube(IBlockState state)
+    public boolean isFullCube(@NotNull IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
+    public boolean canBeConnectedTo(@NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull EnumFacing facing)
     {
         return false;
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
+    @NotNull
+    public BlockFaceShape getBlockFaceShape(@NotNull IBlockAccess worldIn, @NotNull IBlockState state, @NotNull BlockPos pos, @NotNull EnumFacing face)
     {
         return BlockFaceShape.UNDEFINED;
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+    @NotNull
+    public IBlockState getStateForPlacement(@NotNull World world, @NotNull BlockPos pos, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ, int meta, @NotNull EntityLivingBase placer, @NotNull EnumHand hand)
     {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
         return state.withProperty(FACING, placer.getHorizontalFacing());
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
+    @NotNull
+    public Item getItemDropped(@NotNull IBlockState state, @NotNull Random rand, int fortune)
     {
         return null;
     }
 
     @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {}
+    public void getDrops(@NotNull NonNullList<ItemStack> drops, @NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull IBlockState state, int fortune) {}
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    public void onBlockPlacedBy(@NotNull World worldIn, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityLivingBase placer, @NotNull ItemStack stack)
     {
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
         TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -95,7 +99,7 @@ public abstract class BlockDevice extends BlockHorizontal
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+    public boolean removedByPlayer(@NotNull IBlockState state, World world, @NotNull BlockPos pos, @NotNull EntityPlayer player, boolean willHarvest)
     {
         if(!world.isRemote && !player.capabilities.isCreativeMode)
         {
@@ -144,17 +148,17 @@ public abstract class BlockDevice extends BlockHorizontal
     protected void removeTagsForDrop(NBTTagCompound tileEntityTag) {}
 
     @Override
-    public boolean hasTileEntity(IBlockState state)
+    public boolean hasTileEntity(@NotNull IBlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public abstract TileEntity createTileEntity(World world, IBlockState state);
+    public abstract TileEntity createTileEntity(@NotNull World world, @NotNull IBlockState state);
 
     @Override
-    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
+    public boolean eventReceived(@NotNull IBlockState state, World worldIn, @NotNull BlockPos pos, int id, int param)
     {
         TileEntity tileentity = worldIn.getTileEntity(pos);
         return tileentity != null && tileentity.receiveClientEvent(id, param);
@@ -171,7 +175,7 @@ public abstract class BlockDevice extends BlockHorizontal
         }
 
         @Override
-        public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+        public void getDrops(@NotNull NonNullList<ItemStack> drops, @NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull IBlockState state, int fortune)
         {
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof IColored)
@@ -181,7 +185,8 @@ public abstract class BlockDevice extends BlockHorizontal
         }
 
         @Override
-        public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+        @NotNull
+        public ItemStack getPickBlock(@NotNull IBlockState state, @NotNull RayTraceResult target, World world, @NotNull BlockPos pos, @NotNull EntityPlayer player)
         {
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof IColored)
@@ -192,7 +197,7 @@ public abstract class BlockDevice extends BlockHorizontal
         }
 
         @Override
-        public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+        public void onBlockPlacedBy(@NotNull World worldIn, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityLivingBase placer, @NotNull ItemStack stack)
         {
             super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
             TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -204,7 +209,8 @@ public abstract class BlockDevice extends BlockHorizontal
         }
 
         @Override
-        public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+        @NotNull
+        public IBlockState getActualState(@NotNull IBlockState state, IBlockAccess worldIn, @NotNull BlockPos pos)
         {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if(tileEntity instanceof IColored)
@@ -216,7 +222,7 @@ public abstract class BlockDevice extends BlockHorizontal
         }
 
         @Override
-        public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+        public boolean removedByPlayer(@NotNull IBlockState state, World world, @NotNull BlockPos pos, @NotNull EntityPlayer player, boolean willHarvest)
         {
             if(!world.isRemote && !player.capabilities.isCreativeMode)
             {
@@ -265,12 +271,14 @@ public abstract class BlockDevice extends BlockHorizontal
         }
 
         @Override
+        @NotNull
         public IBlockState getStateFromMeta(int meta)
         {
-            return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+            return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
         }
 
         @Override
+        @NotNull
         protected BlockStateContainer createBlockState()
         {
             return new BlockStateContainer(this, FACING, BlockColored.COLOR);

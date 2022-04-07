@@ -20,8 +20,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Notification
 {
-    private IIcon icon;
-    private String title;
+    private final IIcon icon;
+    private final String title;
     private String subTitle;
 
     /**

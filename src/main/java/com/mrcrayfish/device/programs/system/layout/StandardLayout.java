@@ -5,7 +5,6 @@ import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -18,9 +17,9 @@ import java.awt.Color;
  */
 public class StandardLayout extends Layout
 {
-    private String title;
-    protected Application app;
-    private Layout previous;
+    private final String title;
+    protected final Application app;
+    private final Layout previous;
     private IIcon icon;
 
     public StandardLayout(String title, int width, int height, Application app, @Nullable Layout previous)

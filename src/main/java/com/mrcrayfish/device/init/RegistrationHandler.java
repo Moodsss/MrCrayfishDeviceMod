@@ -15,6 +15,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +25,8 @@ import java.util.List;
  */
 public class RegistrationHandler
 {
+    private static final Logger LOGGER = MrCrayfishDeviceMod.getLogger();
+
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class Blocks
     {
@@ -37,7 +40,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<Block> event)
         {
-            MrCrayfishDeviceMod.getLogger().info("Registering blocks");
+            LOGGER.info("Registering blocks");
             BLOCKS.forEach(block -> event.getRegistry().register(block));
         }
     }
@@ -55,7 +58,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<Item> event)
         {
-            MrCrayfishDeviceMod.getLogger().info("Registering items");
+            LOGGER.info("Registering items");
             ITEMS.forEach(item -> event.getRegistry().register(item));
         }
     }
@@ -73,7 +76,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<IRecipe> event)
         {
-            MrCrayfishDeviceMod.getLogger().info("Registering recipes");
+            LOGGER.info("Registering recipes");
             RECIPES.forEach(recipe -> event.getRegistry().register(recipe));
         }
     }
@@ -84,7 +87,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(ModelRegistryEvent event)
         {
-            MrCrayfishDeviceMod.getLogger().info("Registering models");
+            LOGGER.info("Registering models");
             Items.ITEMS.forEach(Models::registerRender);
         }
 
@@ -100,7 +103,7 @@ public class RegistrationHandler
             }
             else
             {
-                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.MOD_ID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
+                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.MOD_ID + ":" + item.getTranslationKey().substring(5), "inventory"));
             }
         }
     }

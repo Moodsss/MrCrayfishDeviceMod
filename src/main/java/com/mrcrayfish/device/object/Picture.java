@@ -9,10 +9,10 @@ import java.util.Arrays;
 public class Picture 
 {
 	private File source;
-	private String name;
-	private String author;
+	private final String name;
+	private final String author;
 	public int[] pixels;
-	public Size size;
+	public final Size size;
 	
 	public Picture(String name, String author, Size size) 
 	{
@@ -71,10 +71,7 @@ public class Picture
 	public int[] copyPixels()
 	{
 		int[] copiedPixels = new int[pixels.length];
-		for(int i = 0; i < pixels.length; i++)
-		{
-			copiedPixels[i] = pixels[i];
-		}
+		System.arraycopy(pixels, 0, copiedPixels, 0, pixels.length);
 		return copiedPixels;
 	}
 	
@@ -101,12 +98,14 @@ public class Picture
 		return picture;
 	}
 	
-	public static enum Size 
+	public enum Size
 	{
 		X16(16, 16, 8, 8), X32(32, 32, 4, 4);
 		
-		public int width, height;
-		public int pixelWidth, pixelHeight;
+		public final int width;
+		public final int height;
+		public final int pixelWidth;
+		public final int pixelHeight;
 		
 		Size(int width, int height, int pixelWidth, int pixelHeight)
 		{

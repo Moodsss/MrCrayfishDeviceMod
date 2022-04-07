@@ -23,6 +23,7 @@ import com.mrcrayfish.device.programs.system.layout.LayoutAppPage;
 import com.mrcrayfish.device.programs.system.layout.LayoutSearchApps;
 import com.mrcrayfish.device.programs.system.object.AppEntry;
 import com.mrcrayfish.device.programs.system.object.RemoteEntry;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,7 +32,6 @@ import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class ApplicationAppStore extends SystemApplication
 
 	private Layout layoutMain;
 
-	public List<AppEntry> certifiedApps = new ArrayList<>();
+	public final List<AppEntry> certifiedApps = new ObjectArrayList<>();
 
 	@Override
 	public void init(@Nullable NBTTagCompound intent)
@@ -159,7 +159,7 @@ public class ApplicationAppStore extends SystemApplication
 
 	public List<RemoteEntry> parseJson(String json)
 	{
-		List<RemoteEntry> entries = new ArrayList<>();
+		List<RemoteEntry> entries = new ObjectArrayList<>();
 		JsonParser parser = new JsonParser();
 		JsonArray array = parser.parse(json).getAsJsonArray();
 		Gson gson = new Gson();
@@ -173,9 +173,7 @@ public class ApplicationAppStore extends SystemApplication
 		this.setCurrentLayout(layout);
 		Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
 		btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->
-		{
-			this.setCurrentLayout(layoutMain);
-		});
+				this.setCurrentLayout(layoutMain));
 		layout.addComponent(btnPrevious);
 	}
 

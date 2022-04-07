@@ -5,7 +5,6 @@ import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
-import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
@@ -15,7 +14,6 @@ import net.minecraft.util.NonNullList;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +22,7 @@ import java.util.List;
 public class ItemList<E> extends Component implements Iterable<E>
 {
 	protected int width;
-	protected int visibleItems;
+	protected final int visibleItems;
 	protected int offset;
 	protected int selected = -1;
 
@@ -33,7 +31,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	protected boolean initialized = false;
 	protected boolean loading = false;
 
-	protected List<E> items = NonNullList.create();
+	protected final List<E> items = NonNullList.create();
 	protected ListItemRenderer<E> renderer = null;
 	protected ItemClickListener<E> itemClickListener = null;
 	
@@ -97,9 +95,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		layoutLoading.setVisible(loading);
 		layoutLoading.addComponent(new Spinner((layoutLoading.width - 12) / 2, (layoutLoading.height - 12) / 2));
 		layoutLoading.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-		{
-			Gui.drawRect(x, y, x + width, y + height, LOADING_BACKGROUND);
-		});
+				Gui.drawRect(x, y, x + width, y + height, LOADING_BACKGROUND));
 		layout.addComponent(layoutLoading);
 
 		updateButtons();
@@ -498,7 +494,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	{
 		if(sorter != null)
 		{
-			Collections.sort(items, sorter);
+			items.sort(sorter);
 		}
 	}
 

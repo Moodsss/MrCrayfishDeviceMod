@@ -1,13 +1,13 @@
 package com.mrcrayfish.device.core.io;
 
 import com.mrcrayfish.device.core.io.FileSystem.Status;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  */
 public class ServerFolder extends ServerFile
 {
-    private List<ServerFile> files = new ArrayList<>();
+    private List<ServerFile> files = new ObjectArrayList<>();
 
     public ServerFolder(String name)
     {
@@ -108,7 +108,7 @@ public class ServerFolder extends ServerFile
 
     private void search(List<ServerFile> results, Predicate<ServerFile> conditions, boolean includeSubServerFolders)
     {
-        files.stream().forEach(file ->
+        files.forEach(file ->
         {
             if(file.isFolder())
             {
@@ -141,7 +141,7 @@ public class ServerFolder extends ServerFile
         NBTTagCompound folderTag = new NBTTagCompound();
 
         NBTTagCompound fileList = new NBTTagCompound();
-        files.stream().forEach(file -> fileList.setTag(file.getName(), file.toTag()));
+        files.forEach(file -> fileList.setTag(file.getName(), file.toTag()));
         folderTag.setTag("files", fileList);
 
         if(protect) folderTag.setBoolean("protected", true);

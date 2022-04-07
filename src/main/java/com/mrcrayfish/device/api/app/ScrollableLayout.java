@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.api.app;
 
-import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
@@ -16,10 +15,10 @@ import java.awt.*;
  */
 public class ScrollableLayout extends Layout
 {
-    protected int placeholderColor = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
+    protected final int placeholderColor = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
 
     protected int scroll;
-    private int visibleHeight;
+    private final int visibleHeight;
     private int scrollSpeed = 5;
 
     public ScrollableLayout(int width, int height, int visibleHeight)

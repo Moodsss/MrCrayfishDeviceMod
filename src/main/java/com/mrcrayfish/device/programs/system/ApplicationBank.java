@@ -21,8 +21,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.awt.Color;
 
 public class ApplicationBank extends SystemApplication
@@ -133,7 +133,7 @@ public class ApplicationBank extends SystemApplication
 			{
 				super.handleTick();
 				int amount = InventoryUtil.getItemAmount(Minecraft.getMinecraft().player, Items.EMERALD);
-				labelEmeraldAmount.setText("x " + Integer.toString(amount));
+				labelEmeraldAmount.setText("x " + amount);
 			}
 		};
 		layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
@@ -203,7 +203,7 @@ public class ApplicationBank extends SystemApplication
 					final int amount = Integer.parseInt(amountField.getText());
 					deposit(amount, (nbt, success) ->
 					{
-						if(success)
+						if(success && nbt != null)
 						{
 							int balance = nbt.getInteger("balance");
 							labelAmount.setText("$" + balance);
@@ -236,7 +236,7 @@ public class ApplicationBank extends SystemApplication
 					final int amount = Integer.parseInt(amountField.getText());
 					withdraw(amount, (nbt, success) ->
 					{
-						if(success)
+						if(success && nbt != null)
 						{
 							int balance = nbt.getInteger("balance");
 							labelAmount.setText("$" + balance);
@@ -262,7 +262,7 @@ public class ApplicationBank extends SystemApplication
 
 		BankUtil.getBalance((nbt, success) ->
 		{
-            if(success)
+            if(success && nbt != null)
             {
                 int balance = nbt.getInteger("balance");
                 labelAmount.setText("$" + balance);

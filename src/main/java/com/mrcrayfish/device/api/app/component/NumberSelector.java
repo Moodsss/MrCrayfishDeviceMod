@@ -18,7 +18,7 @@ public class NumberSelector extends Component
 	protected int max = 100;
 	
 	/* Display Properties */
-	protected int width;
+	protected final int width;
 	
 	/* Sub Components */
 	protected Button btnUp;

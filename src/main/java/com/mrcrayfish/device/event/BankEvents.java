@@ -7,8 +7,10 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class BankEvents 
 {
@@ -19,13 +21,14 @@ public class BankEvents
 		{
 			try 
 			{
-				File data = new File(DimensionManager.getCurrentSaveRootDirectory(), "bank.dat");
-				if(!data.exists())
+				Path data = Paths.get(String.valueOf(DimensionManager.getCurrentSaveRootDirectory()), "bank.dat");
+
+				if (!Files.exists(data))
 				{
 					return;
 				}
 				
-				NBTTagCompound nbt = CompressedStreamTools.read(data);
+				NBTTagCompound nbt = CompressedStreamTools.read(data.toFile());
 				if(nbt != null)
 				{
 					BankUtil.INSTANCE.load(nbt);
@@ -45,15 +48,16 @@ public class BankEvents
 		{
 			try 
 			{
-				File data = new File(DimensionManager.getCurrentSaveRootDirectory(), "bank.dat");
-				if(!data.exists())
+				Path data = Paths.get(String.valueOf(DimensionManager.getCurrentSaveRootDirectory()), "bank.dat");
+
+				if (!Files.exists(data))
 				{
-					data.createNewFile();
+					Files.createDirectories(data);
 				}
-				
+
 				NBTTagCompound nbt = new NBTTagCompound();
 				BankUtil.INSTANCE.save(nbt);
-				CompressedStreamTools.write(nbt, data);
+				CompressedStreamTools.write(nbt, data.toFile());
 			} 
 			catch (IOException e) 
 			{

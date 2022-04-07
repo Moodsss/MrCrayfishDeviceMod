@@ -8,7 +8,6 @@ import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
@@ -27,7 +26,7 @@ public abstract class ComboBox<T> extends Component
 
     protected boolean hovered;
     protected int width = 80;
-    protected int height = 14;
+    protected final int height = 14;
 
     protected Layout layout;
 
@@ -282,13 +281,13 @@ public abstract class ComboBox<T> extends Component
             layout.height = getListHeight(list);
         }
 
-        private static int getListHeight(ItemList list)
+        private static <T> int getListHeight(ItemList<T> list)
         {
             int size = Math.max(1, Math.min(list.visibleItems, list.getItems().size()));
             return (list.renderer != null ? list.renderer.getHeight() : 13) * size + size + 1;
         }
 
-        private static int getListWidth(ItemList list)
+        private static <T> int getListWidth(ItemList<T> list)
         {
             return list.width + 15;
         }

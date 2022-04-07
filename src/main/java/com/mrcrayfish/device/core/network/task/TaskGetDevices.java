@@ -52,13 +52,14 @@ public class TaskGetDevices extends Task
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
     {
         BlockPos devicePos = BlockPos.fromLong(nbt.getLong("devicePos"));
-        Class targetDeviceClass = null;
+        Class<? extends TileEntityNetworkDevice> targetDeviceClass = null;
         try
         {
-            Class targetClass = Class.forName(nbt.getString("targetClass"));
+            Class<? extends TileEntityNetworkDevice> targetClass = (Class<? extends TileEntityNetworkDevice>) Class.forName(nbt.getString("targetClass"));
             if(TileEntityNetworkDevice.class.isAssignableFrom(targetClass))
             {
                 targetDeviceClass = targetClass;

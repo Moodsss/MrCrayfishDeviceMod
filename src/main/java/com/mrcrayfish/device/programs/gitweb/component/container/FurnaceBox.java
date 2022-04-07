@@ -15,7 +15,7 @@ public class FurnaceBox extends ContainerBox
 
     private int progressTimer;
     private int fuelTimer;
-    private int fuelTime;
+    private final int fuelTime;
 
     public FurnaceBox(ItemStack input, ItemStack fuel, ItemStack result)
     {

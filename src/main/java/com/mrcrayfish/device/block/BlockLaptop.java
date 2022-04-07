@@ -8,7 +8,6 @@ import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -28,13 +27,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockLaptop extends BlockDevice.Colored
 {
-	public static final PropertyEnum TYPE = PropertyEnum.create("type", Type.class);
+	public static final PropertyEnum<Type> TYPE = PropertyEnum.create("type", Type.class);
 
 	private static final AxisAlignedBB[] SCREEN_BOXES = new Bounds(13 * 0.0625, 0.0625, 1 * 0.0625, 1.0, 12 * 0.0625, 0.9375).getRotatedBounds();
 	private static final AxisAlignedBB BODY_OPEN_BOX = new AxisAlignedBB(1 * 0.0625, 0.0, 1 * 0.0625, 13 * 0.0625, 1 * 0.0625, 15 * 0.0625);
@@ -47,12 +48,13 @@ public class BlockLaptop extends BlockDevice.Colored
 		super(Material.ANVIL);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, Type.BASE));
 		this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
-		this.setUnlocalizedName("laptop");
+		this.setTranslationKey("laptop");
 		this.setRegistryName("laptop");
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) 
+	@NotNull
+	public AxisAlignedBB getBoundingBox(@NotNull IBlockState state, IBlockAccess source, @NotNull BlockPos pos)
 	{
 		TileEntity tileEntity = source.getTileEntity(pos);
 		if(tileEntity instanceof TileEntityLaptop)
@@ -71,7 +73,7 @@ public class BlockLaptop extends BlockDevice.Colored
 	}
 
 	@Override
-	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
+	public void addCollisionBoxToList(@NotNull IBlockState state, World worldIn, @NotNull BlockPos pos, @NotNull AxisAlignedBB entityBox, @NotNull List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
 	{
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		if(tileEntity instanceof TileEntityLaptop)
@@ -92,7 +94,7 @@ public class BlockLaptop extends BlockDevice.Colored
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World worldIn, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer playerIn, @NotNull EnumHand hand, @NotNull EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		if(tileEntity instanceof TileEntityLaptop)
@@ -156,32 +158,33 @@ public class BlockLaptop extends BlockDevice.Colored
 	}
 	
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) 
+	public @NotNull IBlockState getActualState(@NotNull IBlockState state, IBlockAccess worldIn, @NotNull BlockPos pos)
 	{
 		return super.getActualState(state, worldIn, pos).withProperty(TYPE, Type.BASE);
 	}
 
 	@Override
-	public IBlockState getStateFromMeta(int meta)
+	public @NotNull IBlockState getStateFromMeta(int meta)
 	{
 		return super.getStateFromMeta(meta).withProperty(TYPE, Type.BASE);
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState()
+	protected @NotNull BlockStateContainer createBlockState()
 	{
 		return new BlockStateContainer(this, FACING, TYPE, BlockColored.COLOR);
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state)
+	public TileEntity createTileEntity(@NotNull World world, @NotNull IBlockState state)
 	{
 		return new TileEntityLaptop();
 	}
 
 	@Override
-	public BlockRenderLayer getBlockLayer()
+	@NotNull
+	public BlockRenderLayer getRenderLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
 	}
@@ -191,6 +194,7 @@ public class BlockLaptop extends BlockDevice.Colored
 		BASE, SCREEN;
 
 		@Override
+		@NotNull
 		public String getName() 
 		{
 			return name().toLowerCase();

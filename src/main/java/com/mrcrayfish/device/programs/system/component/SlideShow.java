@@ -21,12 +21,12 @@ public class SlideShow extends Component
     private static final java.awt.Color OVERLAY = new java.awt.Color(0.0F, 0.0F, 0.0F, 0.15F);
     private static final java.awt.Color OVERLAY_HOVER = new java.awt.Color(0.35F, 0.35F, 0.35F, 0.15F);
 
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
-    private NonNullList<ImageEntry> IMAGES = NonNullList.create();
+    private final NonNullList<ImageEntry> IMAGES = NonNullList.create();
     private int currentImage = -1;
-    private Image image;
+    private final Image image;
 
     /**
      * The default constructor for a component.

@@ -8,6 +8,7 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
@@ -16,13 +17,12 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class Folder extends File
 {
-	protected List<File> files = new ArrayList<>();
+	protected final List<File> files = new ObjectArrayList<>();
 
 	private boolean synced = false;
 
@@ -290,7 +290,7 @@ public class Folder extends File
 			{
 				if(file.isFolder())
 				{
-					((Folder)file).copy();
+					file.copy();
 				}
 			}
 		});
@@ -406,7 +406,7 @@ public class Folder extends File
 
 	private void search(List<File> results, Predicate<File> conditions)
 	{
-		files.stream().forEach(file ->
+		files.forEach(file ->
 		{
 			if(conditions.test(file))
 			{
@@ -567,7 +567,7 @@ public class Folder extends File
 		NBTTagCompound folderTag = new NBTTagCompound();
 
 		NBTTagCompound fileList = new NBTTagCompound();
-		files.stream().forEach(file -> fileList.setTag(file.getName(), file.toTag()));
+		files.forEach(file -> fileList.setTag(file.getName(), file.toTag()));
 		folderTag.setTag("files", fileList);
 
 		if(protect) folderTag.setBoolean("protected", true);

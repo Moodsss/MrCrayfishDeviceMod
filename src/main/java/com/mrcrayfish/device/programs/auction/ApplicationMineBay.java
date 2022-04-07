@@ -3,11 +3,9 @@ package com.mrcrayfish.device.programs.auction;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
@@ -37,7 +35,7 @@ public class ApplicationMineBay extends Application
 	
 	private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
 	
-	private String[] categories = { "Building", "Combat", "Tools", "Food", "Materials", "Redstone", "Alchemy", "Rare", "Misc" };
+	private final String[] categories = { "Building", "Combat", "Tools", "Food", "Materials", "Redstone", "Alchemy", "Rare", "Misc" };
 
 	private Layout layoutMyAuctions;
 	private ItemList<AuctionItem> items;
@@ -85,20 +83,15 @@ public class ApplicationMineBay extends Application
 	@Override
 	public void init(@Nullable NBTTagCompound intent)
 	{
-		getCurrentLayout().setBackground(new Background()
-		{
-			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
-			{
-				Gui.drawRect(x, y, x + width, y + 25, Color.GRAY.getRGB());
-				Gui.drawRect(x, y + 24, x + width, y + 25, Color.DARK_GRAY.getRGB());
-				Gui.drawRect(x, y + 25, x + 95, y + height, Color.LIGHT_GRAY.getRGB());
-				Gui.drawRect(x + 94, y + 25, x + 95, y + height, Color.GRAY.getRGB());
-				
-				mc.getTextureManager().bindTexture(MINEBAY_ASSESTS);
-				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-				RenderUtil.drawRectWithTexture(x + 5, y + 6, 0, 0, 61, 11, 61, 12);
-			}
+		getCurrentLayout().setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
+			Gui.drawRect(x, y, x + width, y + 25, Color.GRAY.getRGB());
+			Gui.drawRect(x, y + 24, x + width, y + 25, Color.DARK_GRAY.getRGB());
+			Gui.drawRect(x, y + 25, x + 95, y + height, Color.LIGHT_GRAY.getRGB());
+			Gui.drawRect(x + 94, y + 25, x + 95, y + height, Color.GRAY.getRGB());
+
+			mc.getTextureManager().bindTexture(MINEBAY_ASSESTS);
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			RenderUtil.drawRectWithTexture(x + 5, y + 6, 0, 0, 61, 11, 61, 12);
 		});
 		
 		Button btnAddItem = new Button(70, 5, "Add Item");
@@ -134,7 +127,7 @@ public class ApplicationMineBay extends Application
 		labelCategories.setShadow(false);
 		super.addComponent(labelCategories);
 		
-		ItemList<String> categories = new ItemList<String>(5, 40, 70, 7);
+		ItemList<String> categories = new ItemList<>(5, 40, 70, 7);
 		for(String category : this.categories) {
 			categories.addItem(category);
 		}
@@ -144,7 +137,7 @@ public class ApplicationMineBay extends Application
 		labelItems.setShadow(false);
 		super.addComponent(labelItems);
 		
-		items = new ItemList<AuctionItem>(100, 40, 180, 4);
+		items = new ItemList<>(100, 40, 180, 4);
 		items.setListItemRenderer(new ListItemRenderer<AuctionItem>(20)
 		{
 			@Override
@@ -210,15 +203,10 @@ public class ApplicationMineBay extends Application
 		
 		layoutSelectItem = new Layout(172, 87);
 		layoutSelectItem.setTitle("Add Item");
-		layoutSelectItem.setBackground(new Background()
-		{
-			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
-			{
-				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
-				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRenderer.drawString("Select an Item...", x + 5, y + 7, Color.WHITE.getRGB(), true);
-			}
+		layoutSelectItem.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
+			Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
+			Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
+			mc.fontRenderer.drawString("Select an Item...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 		});
 		
 		inventory = new Inventory(5, 28);
@@ -262,47 +250,42 @@ public class ApplicationMineBay extends Application
 		
 		layoutAmountAndPrice = new Layout(172, 87);
 		layoutAmountAndPrice.setTitle("Add Item");
-		layoutAmountAndPrice.setBackground(new Background()
-		{
-			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
+		layoutAmountAndPrice.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
+			Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
+			Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
+			mc.fontRenderer.drawString("Set amount and price...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+
+			int offsetX = 14;
+			int offsetY = 40;
+			Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + 38, y + offsetY + 38, Color.BLACK.getRGB());
+			Gui.drawRect(x + offsetX + 1, y + offsetY + 1, x + offsetX + 37, y + offsetY + 37, Color.DARK_GRAY.getRGB());
+
+			offsetX = 90;
+			Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + 38, y + offsetY + 38, Color.BLACK.getRGB());
+			Gui.drawRect(x + offsetX + 1, y + offsetY + 1, x + offsetX + 37, y + offsetY + 37, Color.DARK_GRAY.getRGB());
+
+			if(inventory.getSelectedSlotIndex() != -1)
 			{
-				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
-				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRenderer.drawString("Set amount and price...", x + 5, y + 7, Color.WHITE.getRGB(), true);
-				
-				int offsetX = 14;
-				int offsetY = 40;
-				Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + 38, y + offsetY + 38, Color.BLACK.getRGB());
-				Gui.drawRect(x + offsetX + 1, y + offsetY + 1, x + offsetX + 37, y + offsetY + 37, Color.DARK_GRAY.getRGB());
-				
-				offsetX = 90;
-				Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + 38, y + offsetY + 38, Color.BLACK.getRGB());
-				Gui.drawRect(x + offsetX + 1, y + offsetY + 1, x + offsetX + 37, y + offsetY + 37, Color.DARK_GRAY.getRGB());
-				
-				if(inventory.getSelectedSlotIndex() != -1)
+				ItemStack stack = mc.player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
+				if(!stack.isEmpty())
 				{
-					ItemStack stack = mc.player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
-					if(!stack.isEmpty())
+					GlStateManager.pushMatrix();
 					{
-						GlStateManager.pushMatrix();
-						{
-							GlStateManager.translate(x + 17, y + 43, 0);
-							GlStateManager.scale(2, 2, 0);
-							RenderUtil.renderItem(0, 0, stack, false);
-						}
-						GlStateManager.popMatrix();
+						GlStateManager.translate(x + 17, y + 43, 0);
+						GlStateManager.scale(2, 2, 0);
+						RenderUtil.renderItem(0, 0, stack, false);
 					}
+					GlStateManager.popMatrix();
 				}
-				
-				GlStateManager.pushMatrix();
-				{
-					GlStateManager.translate(x + 92, y + 43, 0);
-					GlStateManager.scale(2, 2, 0);
-					RenderUtil.renderItem(0, 0, EMERALD, false);
-				}
-				GlStateManager.popMatrix();
 			}
+
+			GlStateManager.pushMatrix();
+			{
+				GlStateManager.translate(x + 92, y + 43, 0);
+				GlStateManager.scale(2, 2, 0);
+				RenderUtil.renderItem(0, 0, EMERALD, false);
+			}
+			GlStateManager.popMatrix();
 		});
 		
 		buttonAmountAndPriceBack = new Button(122, 4, MINEBAY_ASSESTS, 8, 12, 8, 8);
@@ -335,26 +318,14 @@ public class ApplicationMineBay extends Application
 		/* Duration Layout */
 		layoutDuration = new Layout(172, 87);
 		layoutDuration.setTitle("Add Item");
-		layoutDuration.setBackground(new Background()
-		{
-			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
-			{
-				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
-				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRenderer.drawString("Set duration...", x + 5, y + 7, Color.WHITE.getRGB(), true);
-			}
+		layoutDuration.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
+			Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
+			Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
+			mc.fontRenderer.drawString("Set duration...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 		});
 		
 		buttonDurationBack = new Button(122, 4, MINEBAY_ASSESTS, 8, 12, 8, 8);
-		buttonDurationBack.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(int mouseX, int mouseY, int mouseButton)
-			{
-				setCurrentLayout(layoutAmountAndPrice);
-			}
-		});
+		buttonDurationBack.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutAmountAndPrice));
 		layoutDuration.addComponent(buttonDurationBack);		
 		
 		buttonDurationCancel = new Button(138, 4, MINEBAY_ASSESTS, 0, 12, 8, 8);
@@ -418,7 +389,7 @@ restoreDefaultLayout();
 
 		BankUtil.getBalance((nbt, success) ->
 		{
-            if(success)
+            if(success && nbt != null)
             {
                 labelMoney.setText("$" + nbt.getInteger("balance"));
             }

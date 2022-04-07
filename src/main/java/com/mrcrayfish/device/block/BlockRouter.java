@@ -5,10 +5,8 @@ import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageSyncBlock;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
-import com.mrcrayfish.device.util.IColored;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -23,13 +21,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Author: MrCrayfish
+ * Author: MrCrayfish & Moodss
  */
+@SuppressWarnings("deprecation")
 public class BlockRouter extends BlockDevice.Colored
 {
     public static final PropertyBool VERTICAL = PropertyBool.create("vertical");
@@ -44,12 +44,13 @@ public class BlockRouter extends BlockDevice.Colored
         super(Material.ANVIL);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(VERTICAL, false));
         this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
-        this.setUnlocalizedName("router");
+        this.setTranslationKey("router");
         this.setRegistryName("router");
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    @NotNull
+    public AxisAlignedBB getBoundingBox(IBlockState state, @NotNull IBlockAccess source, @NotNull BlockPos pos)
     {
         if(state.getValue(VERTICAL))
         {
@@ -59,7 +60,7 @@ public class BlockRouter extends BlockDevice.Colored
     }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
+    public void addCollisionBoxToList(IBlockState state, @NotNull World worldIn, @NotNull BlockPos pos, @NotNull AxisAlignedBB entityBox, @NotNull List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
     {
         if(state.getValue(VERTICAL))
         {
@@ -72,7 +73,7 @@ public class BlockRouter extends BlockDevice.Colored
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer playerIn, @NotNull EnumHand hand, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if(worldIn.isRemote && playerIn.capabilities.isCreativeMode)
         {
@@ -92,21 +93,21 @@ public class BlockRouter extends BlockDevice.Colored
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+    public @NotNull IBlockState getStateForPlacement(@NotNull World world, @NotNull BlockPos pos, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ, int meta, @NotNull EntityLivingBase placer, @NotNull EnumHand hand)
     {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
         return state.withProperty(VERTICAL, facing.getHorizontalIndex() != -1);
     }
 
     @Override
-    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side)
+    public boolean canPlaceBlockOnSide(@NotNull World worldIn, @NotNull BlockPos pos, @NotNull EnumFacing side)
     {
         return side != EnumFacing.DOWN;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(@NotNull World world, @NotNull IBlockState state)
     {
         return new TileEntityRouter();
     }
@@ -118,13 +119,13 @@ public class BlockRouter extends BlockDevice.Colored
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta)
+    public @NotNull IBlockState getStateFromMeta(int meta)
     {
         return super.getStateFromMeta(meta).withProperty(VERTICAL, meta - 4 >= 0);
     }
 
     @Override
-    protected BlockStateContainer createBlockState()
+    protected @NotNull BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, FACING, VERTICAL, BlockColored.COLOR);
     }

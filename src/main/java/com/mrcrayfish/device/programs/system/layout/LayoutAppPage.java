@@ -8,7 +8,6 @@ import com.mrcrayfish.device.api.app.ScrollableLayout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
@@ -26,21 +25,17 @@ import net.minecraft.util.text.TextFormatting;
 import java.awt.*;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
 
 /**
  * Author: MrCrayfish
  */
 public class LayoutAppPage extends Layout
 {
-    private Laptop laptop;
-    private AppEntry entry;
-    private ApplicationAppStore store;
+    private final Laptop laptop;
+    private final AppEntry entry;
+    private final ApplicationAppStore store;
 
-    private Image imageBanner;
     private Image imageIcon;
-    private Label labelTitle;
-    private Label labelVersion;
 
     private boolean installed;
 
@@ -70,15 +65,15 @@ public class LayoutAppPage extends Layout
 
         ResourceLocation resource = new ResourceLocation(entry.getId());
 
-        imageBanner = new Image(0, 0, 250, 40);
+        Image imageBanner = new Image(0, 0, 250, 40);
         imageBanner.setDrawFull(true);
         if(entry instanceof LocalEntry)
         {
-            imageBanner.setImage(new ResourceLocation(resource.getResourceDomain(), "textures/app/banner/" + resource.getResourcePath() + ".png"));
+            imageBanner.setImage(new ResourceLocation(resource.getNamespace(), "textures/app/banner/" + resource.getPath() + ".png"));
         }
         else if(entry instanceof RemoteEntry)
         {
-            imageBanner.setImage(ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getResourceDomain() + "/" + resource.getResourcePath() + "/banner.png");
+            imageBanner.setImage(ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/banner.png");
         }
         this.addComponent(imageBanner);
 
@@ -90,7 +85,7 @@ public class LayoutAppPage extends Layout
         }
         else if(entry instanceof RemoteEntry)
         {
-            imageIcon = new Image(5, 26, 28, 28, ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getResourceDomain() + "/" + resource.getResourcePath() + "/icon.png");
+            imageIcon = new Image(5, 26, 28, 28, ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/icon.png");
         }
         this.addComponent(imageIcon);
 
@@ -100,12 +95,12 @@ public class LayoutAppPage extends Layout
             Image certifiedIcon = new Image(38 + width + 3, 29, 20, 20, Icons.VERIFIED);
             this.addComponent(certifiedIcon);
         }
-        labelTitle = new Label(entry.getName(), 38, 32);
+        Label labelTitle = new Label(entry.getName(), 38, 32);
         labelTitle.setScale(2);
         this.addComponent(labelTitle);
 
         String version = entry instanceof LocalEntry ? "v" + entry.getVersion() + " - " + entry.getAuthor() : entry.getAuthor();
-        labelVersion = new Label(version, 38, 50);
+        Label labelVersion = new Label(version, 38, 50);
         this.addComponent(labelVersion);
 
         String description = GitWebFrame.parseFormatting(entry.getDescription());
@@ -133,7 +128,7 @@ public class LayoutAppPage extends Layout
         else if(entry instanceof RemoteEntry)
         {
             RemoteEntry remoteEntry = (RemoteEntry) entry;
-            String screenshotUrl = ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getResourceDomain() + "/" + resource.getResourcePath() + "/screenshots/screenshot_%d.png";
+            String screenshotUrl = ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/screenshots/screenshot_%d.png";
             for(int i = 0; i < remoteEntry.screenshots; i++)
             {
                 slideShow.addImage(String.format(screenshotUrl, i));
@@ -216,7 +211,7 @@ public class LayoutAppPage extends Layout
         catch (Throwable throwable1)
         {
             Throwable throwable = throwable1.getCause();
-            MrCrayfishDeviceMod.getLogger().error("Couldn't open link: {}", (Object)(throwable == null ? "<UNKNOWN>" : throwable.getMessage()));
+            MrCrayfishDeviceMod.getLogger().error("Couldn't open link: {}", throwable == null ? "<UNKNOWN>" : throwable.getMessage());
         }
     }
 }

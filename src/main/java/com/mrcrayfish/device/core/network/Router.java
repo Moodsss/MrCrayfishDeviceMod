@@ -173,9 +173,7 @@ public class Router
         tag.setUniqueId("id", getId());
 
         NBTTagList deviceList = new NBTTagList();
-        NETWORK_DEVICES.forEach((id, device) -> {
-            deviceList.appendTag(device.toTag(includePos));
-        });
+        NETWORK_DEVICES.forEach((id, device) -> deviceList.appendTag(device.toTag(includePos)));
         tag.setTag("network_devices", deviceList);
 
         return tag;

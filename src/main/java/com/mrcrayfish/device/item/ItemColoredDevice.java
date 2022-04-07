@@ -5,13 +5,13 @@ import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.text.WordUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -21,6 +21,31 @@ import java.util.List;
  */
 public class ItemColoredDevice extends ItemDevice implements SubItems
 {
+    public static TextFormatting getFromColor(EnumDyeColor color)
+    {
+        switch(color)
+        {
+            case ORANGE:
+            case BROWN:
+                return TextFormatting.GOLD;
+            case MAGENTA:
+            case PINK:
+                return TextFormatting.LIGHT_PURPLE;
+            case LIGHT_BLUE: return TextFormatting.BLUE;
+            case YELLOW: return TextFormatting.YELLOW;
+            case LIME: return TextFormatting.GREEN;
+            case GRAY: return TextFormatting.DARK_GRAY;
+            case SILVER: return TextFormatting.GRAY;
+            case CYAN: return TextFormatting.DARK_AQUA;
+            case PURPLE: return TextFormatting.DARK_PURPLE;
+            case BLUE: return TextFormatting.DARK_BLUE;
+            case GREEN: return TextFormatting.DARK_GREEN;
+            case RED: return TextFormatting.DARK_RED;
+            case BLACK: return TextFormatting.BLACK;
+            default: return TextFormatting.WHITE;
+        }
+    }
+
     public ItemColoredDevice(Block block)
     {
         super(block);
@@ -29,16 +54,16 @@ public class ItemColoredDevice extends ItemDevice implements SubItems
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, @NotNull ITooltipFlag flagIn)
     {
         EnumDyeColor color = EnumDyeColor.byMetadata(stack.getMetadata());
         String colorName = color.getName().replace("_", " ");
         colorName = WordUtils.capitalize(colorName);
-        tooltip.add("Color: " + TextFormatting.BOLD.toString() + getFromColor(color).toString() + colorName);
+        tooltip.add("Color: " + TextFormatting.BOLD + getFromColor(color).toString() + colorName);
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
+    public void getSubItems(@NotNull CreativeTabs tab, @NotNull NonNullList<ItemStack> items)
     {
         if(isInCreativeTab(tab))
         {
@@ -55,31 +80,8 @@ public class ItemColoredDevice extends ItemDevice implements SubItems
         NonNullList<ResourceLocation> modelLocations = NonNullList.create();
         for(EnumDyeColor color : EnumDyeColor.values())
         {
-            modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "/" + color.getName()));
+            modelLocations.add(new ResourceLocation(Reference.MOD_ID, getTranslationKey().substring(5) + "/" + color.getName()));
         }
         return modelLocations;
-    }
-
-    private static TextFormatting getFromColor(EnumDyeColor color)
-    {
-        switch(color)
-        {
-            case ORANGE: return TextFormatting.GOLD;
-            case MAGENTA: return TextFormatting.LIGHT_PURPLE;
-            case LIGHT_BLUE: return TextFormatting.BLUE;
-            case YELLOW: return TextFormatting.YELLOW;
-            case LIME: return TextFormatting.GREEN;
-            case PINK: return TextFormatting.LIGHT_PURPLE;
-            case GRAY: return TextFormatting.DARK_GRAY;
-            case SILVER: return TextFormatting.GRAY;
-            case CYAN: return TextFormatting.DARK_AQUA;
-            case PURPLE: return TextFormatting.DARK_PURPLE;
-            case BLUE: return TextFormatting.DARK_BLUE;
-            case BROWN: return TextFormatting.GOLD;
-            case GREEN: return TextFormatting.DARK_GREEN;
-            case RED: return TextFormatting.DARK_RED;
-            case BLACK: return TextFormatting.BLACK;
-            default: return TextFormatting.WHITE;
-        }
     }
 }

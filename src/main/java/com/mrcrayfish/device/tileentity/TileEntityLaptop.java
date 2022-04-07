@@ -4,12 +4,11 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 {
@@ -61,7 +60,7 @@ public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound compound) 
+	public void readFromNBT(@NotNull NBTTagCompound compound)
 	{
 		super.readFromNBT(compound);
 		if(compound.hasKey("open"))
@@ -91,7 +90,7 @@ public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) 
+	public @NotNull NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound)
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
@@ -140,6 +139,7 @@ public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 
 	@Override
 	@SideOnly(Side.CLIENT)
+	@NotNull
 	public AxisAlignedBB getRenderBoundingBox() 
 	{
 		return INFINITE_EXTENT_AABB;

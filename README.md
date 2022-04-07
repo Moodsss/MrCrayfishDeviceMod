@@ -20,7 +20,7 @@ Source pack installation information:
 * Step 2: Once you have a command window up in the folder that the downloaded material was placed, type:
 
 	| Operating System | Command                      |
-	| ---------------- | :--------------------------: |
+------------------| ---------------- | :--------------------------: |
 	| Windows:         | gradlew setupDecompWorkspace |
 	| Linux/Mac OS:    |./gradlew setupDecompWorkspace|
 

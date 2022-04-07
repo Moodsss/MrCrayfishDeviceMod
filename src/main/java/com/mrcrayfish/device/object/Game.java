@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,21 +17,21 @@ public class Game extends Component
 {
 	public static final ResourceLocation ICONS = new ResourceLocation("cdm:textures/gui/mine_racer.png");
 
-	private static final Map<Integer, Tile> registeredTiles = new HashMap<Integer, Tile>();
+	private static final Map<Integer, Tile> registeredTiles = new HashMap<>();
 	
 	public int mapWidth;
 	public int mapHeight;
 	
 	private Tile[][] tiles;
 	
-	private Player player = new Player(this);
+	private final Player player = new Player(this);
 	
 	private boolean editorMode = false;
 	private Tile currentTile = Tile.grass;
 	private Layer currentLayer = Layer.BACKGROUND;
 	private boolean renderBackground = true;
-	private boolean renderMidgroundLow = true;
-	private boolean renderMidgroundHigh = true;
+	private final boolean renderMidgroundLow = true;
+	private final boolean renderMidgroundHigh = true;
 	private boolean renderForeground = true;
 	private boolean renderPlayer = true;
 	
@@ -337,12 +338,12 @@ public class Game extends Component
 		}
 	}
 
-	public static enum Layer
+	public enum Layer
 	{
 		BACKGROUND(0, 0), MIDGROUND_LOW(1, 0), MIDGROUND_HIGH(2, 20), FOREGROUND(3, 30);
 		
-		public int layer;
-		public double zLevel;
+		public final int layer;
+		public final double zLevel;
 		
 		Layer(int layer, double zLevel)
 		{
@@ -372,6 +373,6 @@ public class Game extends Component
 	// Temp method
 	public void fill(Tile tile)
 	{
-		for(int i = 0; i < tiles[0].length; i++) tiles[0][i] = tile;
+		Arrays.fill(tiles[0], tile);
 	}
 }

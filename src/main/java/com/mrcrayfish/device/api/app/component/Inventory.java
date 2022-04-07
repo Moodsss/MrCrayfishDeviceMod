@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
 
 import java.awt.*;
 
@@ -90,7 +89,7 @@ public class Inventory extends Component
 						ItemStack stack = mc.player.inventory.getStackInSlot((i * 9) + j + 9);
 						if(!stack.isEmpty())
 						{
-							laptop.drawHoveringText(Arrays.asList(new String[]{stack.getDisplayName()}), mouseX, mouseY);
+							laptop.drawHoveringText(new String[]{ stack.getDisplayName() }, mouseX, mouseY);
 						}
 						return;
 					}

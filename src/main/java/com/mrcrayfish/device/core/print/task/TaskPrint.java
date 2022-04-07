@@ -55,7 +55,7 @@ public class TaskPrint extends Task
             if(router != null)
             {
                 TileEntityNetworkDevice printer = router.getDevice(world, nbt.getUniqueId("printerId"));
-                if(printer != null && printer instanceof TileEntityPrinter)
+                if(printer instanceof TileEntityPrinter)
                 {
                     IPrint print = IPrint.loadFromTag(nbt.getCompoundTag("print"));
                     ((TileEntityPrinter) printer).addToQueue(print);

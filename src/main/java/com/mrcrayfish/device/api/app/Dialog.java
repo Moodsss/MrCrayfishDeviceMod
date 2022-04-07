@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.api.app;
 
-import com.mrcrayfish.device.api.app.Layout.Background;
+import com.google.common.base.Preconditions;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.*;
@@ -31,10 +31,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.function.Predicate;
 
@@ -200,7 +199,7 @@ public abstract class Dialog extends Wrappable
 
 	public static class Message extends Dialog
 	{
-		private String messageText = "";
+		private final String messageText;
 		
 		private ClickListener positiveListener;
 		private Button buttonPositive;
@@ -220,14 +219,7 @@ public abstract class Dialog extends Wrappable
 			
 			super.init(intent);
 			
-			defaultLayout.setBackground(new Background()
-			{
-				@Override
-				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
-				{
-					Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
-				}
-			});
+			defaultLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB()));
 			
 			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
@@ -285,14 +277,7 @@ public abstract class Dialog extends Wrappable
 			
 			super.init(intent);
 
-			defaultLayout.setBackground(new Background()
-			{
-				@Override
-				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
-				{
-					Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
-				}
-			});
+			defaultLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB()));
 			
 			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
@@ -328,11 +313,9 @@ public abstract class Dialog extends Wrappable
 		 * Sets the positive button text
 		 * @param positiveText
 		 */
-		public void setPositiveText(@Nonnull String positiveText)
+		public void setPositiveText(String positiveText)
 		{
-			if(positiveText == null) {
-				throw new IllegalArgumentException("Text can't be null");
-			}
+			Preconditions.checkArgument(positiveText != null, "Text can't be null");
 			this.positiveText = positiveText;
 		}
 
@@ -341,11 +324,9 @@ public abstract class Dialog extends Wrappable
 		 *
 		 * @param negativeText
 		 */
-		public void setNegativeText(@Nonnull String negativeText)
+		public void setNegativeText(String negativeText)
 		{
-			if(negativeText == null) {
-				throw new IllegalArgumentException("Text can't be null");
-			}
+			Preconditions.checkArgument(negativeText != null, "Text can't be null");
 			this.negativeText = negativeText;
 		}
 		
@@ -406,9 +387,7 @@ public abstract class Dialog extends Wrappable
 
 			super.init(intent);
 
-			defaultLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
-				Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
-			});
+			defaultLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB()));
 
 			if(messageText != null)
 			{
@@ -449,11 +428,9 @@ public abstract class Dialog extends Wrappable
 		 * Sets the initial text for the input text field
 		 * @param inputText
 		 */
-		public void setInputText(@Nonnull String inputText)
+		public void setInputText(String inputText)
 		{
-			if(inputText == null) {
-				throw new IllegalArgumentException("Text can't be null");
-			}
+			Preconditions.checkArgument(inputText != null, "Text can't be null");
 			this.inputText = inputText;
 		}
 
@@ -471,11 +448,9 @@ public abstract class Dialog extends Wrappable
 		 * Sets the positive button text
 		 * @param positiveText
 		 */
-		public void setPositiveText(@Nonnull String positiveText)
+		public void setPositiveText(String positiveText)
 		{
-			if(positiveText == null) {
-				throw new IllegalArgumentException("Text can't be null");
-			}
+			Preconditions.checkArgument(positiveText != null, "Text can't be null");
 			this.positiveText = positiveText;
 		}
 
@@ -484,11 +459,9 @@ public abstract class Dialog extends Wrappable
 		 *
 		 * @param negativeText
 		 */
-		public void setNegativeText(@Nonnull String negativeText)
+		public void setNegativeText(String negativeText)
 		{
-			if(negativeText == null) {
-				throw new IllegalArgumentException("Text can't be null");
-			}
+			Preconditions.checkArgument(negativeText != null, "Text can't be null");
 			this.negativeText = negativeText;
 		}
 
@@ -642,7 +615,7 @@ public abstract class Dialog extends Wrappable
 	{
 		private final Application app;
 		private String name;
-		private NBTTagCompound data;
+		private final NBTTagCompound data;
 
 		private String positiveText = "Save";
 		private String negativeText = "Cancel";
@@ -710,33 +683,34 @@ public abstract class Dialog extends Wrappable
 
 						browser.addFile(file, (response, success) ->
 						{
-							if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
+							if(response != null)
 							{
-								Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
-								dialog.setPositiveText("Override");
-								dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) ->
+								if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
 								{
-									browser.addFile(file, true, (response1, success1) ->
-									{
-                                        dialog.close();
+									Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
+									dialog.setPositiveText("Override");
+									dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) ->
+											browser.addFile(file, true, (response1, success1) ->
+											{
+												dialog.close();
 
-                                        //TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
-                                        if(responseHandler != null)
-                                        {
-                                            responseHandler.onResponse(success1, file);
-                                        }
-                                        SaveFile.this.close();
-                                    });
-								});
-								app.openDialog(dialog);
-							}
-							else
-							{
-								if(responseHandler != null)
-								{
-									responseHandler.onResponse(true, file);
+												//TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
+												if(responseHandler != null)
+												{
+													responseHandler.onResponse(success1, file);
+												}
+												SaveFile.this.close();
+											}));
+									app.openDialog(dialog);
 								}
-								close();
+								else
+								{
+									if(responseHandler != null)
+									{
+										responseHandler.onResponse(true, file);
+									}
+									close();
+								}
 							}
                         });
 					}
@@ -760,11 +734,9 @@ public abstract class Dialog extends Wrappable
 		 * Sets the positive button text
 		 * @param positiveText
 		 */
-		public void setPositiveText(@Nonnull String positiveText)
+		public void setPositiveText(String positiveText)
 		{
-			if(positiveText == null) {
-				throw new IllegalArgumentException("Text can't be null");
-			}
+			Preconditions.checkArgument(positiveText != null, "Text can't be null");
 			this.positiveText = positiveText;
 		}
 
@@ -773,11 +745,9 @@ public abstract class Dialog extends Wrappable
 		 *
 		 * @param negativeText
 		 */
-		public void setNegativeText(@Nonnull String negativeText)
+		public void setNegativeText(String negativeText)
 		{
-			if(negativeText == null) {
-				throw new IllegalArgumentException("Text can't be null");
-			}
+			Preconditions.checkArgument(negativeText != null, "Text can't be null");
 			this.negativeText = negativeText;
 		}
 
@@ -891,12 +861,15 @@ public abstract class Dialog extends Wrappable
 				BlockPos laptopPos = Laptop.getPos();
 
 				BlockPos pos1 = o1.getPos();
+				assert laptopPos != null;
+				assert pos1 != null;
 				double distance1 = laptopPos.distanceSqToCenter(pos1.getX() + 0.5, pos1.getY() + 0.5, pos1.getZ() + 0.5);
 
 				BlockPos pos2 = o2.getPos();
+				assert pos2 != null;
 				double distance2 = laptopPos.distanceSqToCenter(pos2.getX() + 0.5, pos2.getY() + 0.5, pos2.getZ() + 0.5);
 
-				return distance2 < distance1 ? 1 : (distance1 == distance2) ? 0 : -1;
+				return Double.compare(distance1, distance2);
 			});
 			layoutMain.addComponent(itemListPrinters);
 
@@ -1001,7 +974,7 @@ public abstract class Dialog extends Wrappable
 
 				layoutMain = new Layout(120, 70);
 
-				labelName = new Label(TextFormatting.GOLD.toString() + TextFormatting.BOLD.toString() + entry.getName(), 5, 5);
+				labelName = new Label(TextFormatting.GOLD.toString() + TextFormatting.BOLD + entry.getName(), 5, 5);
 				layoutMain.addComponent(labelName);
 
 				labelPaper = new Label(TextFormatting.DARK_GRAY + "Paper: " + TextFormatting.RESET + Integer.toString(0), 5, 18); //TODO fix paper count

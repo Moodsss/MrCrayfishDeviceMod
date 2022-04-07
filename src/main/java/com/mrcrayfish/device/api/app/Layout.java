@@ -4,12 +4,12 @@ import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.util.GLHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,7 +69,7 @@ public class Layout extends Component
 		if(height < 1)
 			throw new IllegalArgumentException("Height can not be less than 1 tall");
 		
-		this.components = new ArrayList<Component>();
+		this.components = new ObjectArrayList<>();
 		this.width = width;
 		this.height = height;
 	}
@@ -92,7 +92,7 @@ public class Layout extends Component
 		if(height < 1)
 			throw new IllegalArgumentException("Height can not be less than 1 tall");
 		
-		this.components = new ArrayList<Component>();
+		this.components = new ObjectArrayList<>();
 		this.width = width;
 		this.height = height;
 	}
@@ -357,7 +357,7 @@ public class Layout extends Component
 
 	public void setInitialized()
 	{
-		this.initialized = initialized;
+		this.initialized = true;
 	}
 
 	/**

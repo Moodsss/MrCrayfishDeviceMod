@@ -203,6 +203,6 @@ public abstract class Component extends Gui
 
 	protected static int color(int personalColor, int systemColor)
 	{
-		return personalColor != -1 && personalColor >= 0 ? personalColor : systemColor;
+		return personalColor >= 0 ? personalColor : systemColor;
 	}
 }

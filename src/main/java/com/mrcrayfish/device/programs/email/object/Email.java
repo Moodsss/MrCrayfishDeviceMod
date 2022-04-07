@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.programs.email.object;
 
 import com.mrcrayfish.device.api.io.File;
-import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
@@ -12,8 +11,10 @@ import javax.annotation.Nullable;
  */
 public class Email
 {
-    private String subject, author, message;
-    private File attachment;
+    private final String subject;
+    private String author;
+    private final String message;
+    private final File attachment;
     private boolean read;
 
     public Email(String subject, String message, @Nullable File file)

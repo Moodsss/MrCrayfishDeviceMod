@@ -2,9 +2,9 @@ package com.mrcrayfish.device.programs.gitweb.module;
 
 import com.mrcrayfish.device.programs.gitweb.component.container.ContainerBox;
 import com.mrcrayfish.device.programs.gitweb.component.container.CraftingBox;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +17,7 @@ public class CraftingModule extends ContainerModule
     @Override
     public String[] getOptionalData()
     {
-        List<String> optionalData = new ArrayList<>();
-        optionalData.addAll(Arrays.asList(super.getOptionalData()));
+        List<String> optionalData = new ObjectArrayList<>(Arrays.asList(super.getOptionalData()));
         for(int i = 0; i < 9; i++)
         {
             optionalData.add("slot-" + (i + 1));

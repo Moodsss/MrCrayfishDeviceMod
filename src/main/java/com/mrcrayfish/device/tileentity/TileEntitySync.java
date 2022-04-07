@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Author: MrCrayfish
@@ -20,15 +21,16 @@ public abstract class TileEntitySync extends TileEntity
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+    public void onDataPacket(@NotNull NetworkManager net, SPacketUpdateTileEntity pkt)
     {
         this.readFromNBT(pkt.getNbtCompound());
     }
 
     @Override
+    @NotNull
     public final NBTTagCompound getUpdateTag()
     {
-        if(!pipeline.hasNoTags())
+        if(!pipeline.isEmpty())
         {
             NBTTagCompound updateTag = super.writeToNBT(pipeline);
             pipeline = new NBTTagCompound();

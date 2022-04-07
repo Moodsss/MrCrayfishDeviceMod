@@ -24,10 +24,12 @@ import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateSystemData;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import com.mrcrayfish.device.util.GuiHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -35,6 +37,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -57,8 +60,8 @@ public class Laptop extends GuiScreen implements System
 
 	public static final FontRenderer fontRenderer = new LaptopFontRenderer(Minecraft.getMinecraft());
 
-	private static final List<Application> APPLICATIONS = new ArrayList<>();
-	private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
+	private static final List<Application> APPLICATIONS = new ObjectArrayList<>();
+	private static final List<ResourceLocation> WALLPAPERS = new ObjectArrayList<>();
 
 	private static final int BORDER = 10;
 	private static final int DEVICE_WIDTH = 384;
@@ -70,25 +73,25 @@ public class Laptop extends GuiScreen implements System
 	private static BlockPos pos;
 	private static Drive mainDrive;
 
-	private Settings settings;
-	private TaskBar bar;
-	private Window[] windows;
+	private final Settings settings;
+	private final TaskBar bar;
+	private final Window<?>[] windows;
 	private Layout context = null;
 
-	private NBTTagCompound appData;
-	private NBTTagCompound systemData;
+	private final NBTTagCompound appData;
+	private final NBTTagCompound systemData;
 
 	private int currentWallpaper;
 	private int lastMouseX, lastMouseY;
 	private boolean dragging = false;
 
-	protected List<AppInfo> installedApps = new ArrayList<>();
+	protected final List<AppInfo> installedApps = new ObjectArrayList<>();
 
 	public Laptop(TileEntityLaptop laptop)
 	{
 		this.appData = laptop.getApplicationData();
 		this.systemData = laptop.getSystemData();
-		this.windows = new Window[5];
+		this.windows = new Window<?>[5];
 		this.settings = Settings.fromTag(systemData.getCompoundTag("Settings"));
 		this.bar = new TaskBar(this);
 		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
@@ -138,7 +141,7 @@ public class Laptop extends GuiScreen implements System
         Keyboard.enableRepeatEvents(false);
 
         /* Close all windows and sendTask application data */
-        for(Window window : windows)
+        for(Window<?> window : windows)
 		{
         	if(window != null)
 			{
@@ -167,10 +170,10 @@ public class Laptop extends GuiScreen implements System
 	}
 	
 	@Override
-	public void onResize(Minecraft mcIn, int width, int height)
+	public void onResize(@NotNull Minecraft mcIn, int width, int height)
 	{
 		super.onResize(mcIn, width, height);
-		for(Window window : windows)
+		for(Window<?> window : windows)
 		{
 			if(window != null)
 			{
@@ -184,7 +187,7 @@ public class Laptop extends GuiScreen implements System
 	{
 		bar.onTick();
 
-		for(Window window : windows)
+		for(Window<?> window : windows)
 		{
 			if(window != null)
 			{
@@ -202,8 +205,8 @@ public class Laptop extends GuiScreen implements System
 		partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
 
 		this.drawDefaultBackground();
-		
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.getTextureManager().bindTexture(LAPTOP_GUI);
 		
 		/* Physical Screen */
@@ -249,7 +252,7 @@ public class Laptop extends GuiScreen implements System
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)
 		{
-			Window window = windows[i];
+			Window<?> window = windows[i];
 			if(window != null)
 			{
 				window.render(this, mc, posX + BORDER, posY + BORDER, mouseX, mouseY, i == 0 && !insideContext, partialTicks);
@@ -283,6 +286,7 @@ public class Laptop extends GuiScreen implements System
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
 	{
 		this.lastMouseX = mouseX;
@@ -310,30 +314,33 @@ public class Laptop extends GuiScreen implements System
 
 		for(int i = 0; i < windows.length; i++)
 		{
-			Window<Application> window = windows[i];
+			Window<?> window = windows[i];
 			if(window != null)
 			{
-				Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
-				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
+				if(window.getContent() instanceof Application)
 				{
-					windows[i] = null;
-					updateWindowStack();
-					windows[0] = window;
+					Window<Dialog> dialogWindow = ((Window<Application>) window).getContent().getActiveDialog();
+					if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
+					{
+						windows[i] = null;
+						updateWindowStack();
+						windows[0] = window;
 
-					windows[0].handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
-					
-					if(isMouseWithinWindowBar(mouseX, mouseY, dialogWindow))
-					{
-						this.dragging = true;
-						return;
+						windows[0].handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
+
+						if(isMouseWithinWindowBar(mouseX, mouseY, dialogWindow))
+						{
+							this.dragging = true;
+							return;
+						}
+
+						if(isMouseWithinWindowBar(mouseX, mouseY, window) && dialogWindow == null)
+						{
+							this.dragging = true;
+							return;
+						}
+						break;
 					}
-		
-					if(isMouseWithinWindowBar(mouseX, mouseY, window) && dialogWindow == null)
-					{
-						this.dragging = true;
-						return;
-					}
-					break;
 				}
 			}
 		}
@@ -406,31 +413,34 @@ public class Laptop extends GuiScreen implements System
 
 		if(windows[0] != null)
 		{
-			Window<Application> window = windows[0];
-			Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
-			if(dragging)
+			Window<?> window = windows[0];
+			if(window.getContent() instanceof Application)
 			{
-				if(isMouseOnScreen(mouseX, mouseY))
+				Window<Dialog> dialogWindow = ((Application) window.getContent()).getActiveDialog();
+				if(dragging)
 				{
-					if(dialogWindow == null)
+					if(isMouseOnScreen(mouseX, mouseY))
 					{
-						window.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
+						if(dialogWindow == null)
+						{
+							window.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
+						}
+						else
+						{
+							dialogWindow.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
+						}
 					}
 					else
 					{
-						dialogWindow.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
+						dragging = false;
 					}
 				}
 				else
 				{
-					dragging = false;
-				}
-			}
-			else
-			{
-				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
-				{
-					window.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
+					if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
+					{
+						window.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
+					}
 				}
 			}
 		}
@@ -455,22 +465,33 @@ public class Laptop extends GuiScreen implements System
 	}
 
 	@Override
-	public void drawHoveringText(List<String> textLines, int x, int y) 
+	public void drawHoveringText(@NotNull List<String> textLines, int x, int y)
 	{
 		super.drawHoveringText(textLines, x, y);
+	}
+
+	public void drawHoveringText(String[] textLines, int x, int y)
+	{
+		this.drawHoveringText(ImmutableList.copyOf(textLines), x, y);
 	}
 
 	public boolean sendApplicationToFront(AppInfo info)
 	{
 		for(int i = 0; i < windows.length; i++)
 		{
-			Window window = windows[i];
-			if(window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
+			Window<?> window = windows[i];
+			if(window != null && window.content != null)
 			{
-				windows[i] = null;
-				updateWindowStack();
-				windows[0] = window;
-				return true;
+				if(window.content instanceof Application)
+				{
+					if(((Application) window.content).getInfo().equals(info))
+					{
+						windows[i] = null;
+						updateWindowStack();
+						windows[0] = window;
+						return true;
+					}
+				}
 			}
 		}
 		return false;
@@ -565,28 +586,31 @@ public class Laptop extends GuiScreen implements System
 	{
 		for(int i = 0; i < windows.length; i++)
 		{
-			Window<Application> window = windows[i];
+			Window<?> window = windows[i];
 			if(window != null)
 			{
-				if(window.content.getInfo().equals(app.getInfo()))
+				if(window.content instanceof Application)
 				{
-					if(app.isDirty())
+					if(((Application) window.content).getInfo().equals(app.getInfo()))
 					{
-						NBTTagCompound container = new NBTTagCompound();
-						app.save(container);
-						app.clean();
-						appData.setTag(app.getInfo().getFormattedId(), container);
-						TaskManager.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getInfo().getFormattedId(), container));
-					}
+						if(app.isDirty())
+						{
+							NBTTagCompound container = new NBTTagCompound();
+							app.save(container);
+							app.clean();
+							appData.setTag(app.getInfo().getFormattedId(), container);
+							TaskManager.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getInfo().getFormattedId(), container));
+						}
 
-					if(app instanceof SystemApplication)
-					{
-						((SystemApplication) app).setLaptop(null);
-					}
+						if(app instanceof SystemApplication)
+						{
+							((SystemApplication) app).setLaptop(null);
+						}
 
-					window.handleClose();
-					windows[i] = null;
-					return;
+						window.handleClose();
+						windows[i] = null;
+						return;
+					}
 				}
 			}
 		}
@@ -624,7 +648,7 @@ public class Laptop extends GuiScreen implements System
 
 	private boolean hasReachedWindowLimit()
 	{
-		for(Window window : windows)
+		for(Window<?> window : windows)
 		{
 			if(window == null) return false;
 		}
@@ -638,7 +662,7 @@ public class Laptop extends GuiScreen implements System
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX, posY, posX + SCREEN_WIDTH, posY + SCREEN_HEIGHT);
 	}
 
-	private boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window window)
+	private boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window<?> window)
 	{
 		if(window == null) return false;
 		int posX = (width - SCREEN_WIDTH) / 2;
@@ -646,7 +670,7 @@ public class Laptop extends GuiScreen implements System
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 1, posX + window.offsetX + window.width - 13, posY + window.offsetY + 11);
 	}
 
-	private boolean isMouseWithinWindow(int mouseX, int mouseY, Window window)
+	private boolean isMouseWithinWindow(int mouseX, int mouseY, Window<?> window)
 	{
 		if(window == null) return false;
 		int posX = (width - SCREEN_WIDTH) / 2;
@@ -654,7 +678,7 @@ public class Laptop extends GuiScreen implements System
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX, posY + window.offsetY, posX + window.offsetX + window.width, posY + window.offsetY + window.height);
 	}
 	
-	public boolean isMouseWithinApp(int mouseX, int mouseY, Window window)
+	public boolean isMouseWithinApp(int mouseX, int mouseY, Window<?> window)
 	{
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
@@ -663,9 +687,9 @@ public class Laptop extends GuiScreen implements System
 
 	public boolean isApplicationRunning(AppInfo info)
 	{
-		for(Window window : windows) 
+		for(Window<?> window : windows)
 		{
-			if(window != null && ((Application) window.content).getInfo() == info)
+			if(window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
 			{
 				return true;
 			}

@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 
 public abstract class Wrappable
 {
-	private Window window;
+	private Window<?> window;
 
 	/**
 	 * The default initialization method. Clears any components in the default
@@ -176,7 +176,7 @@ public abstract class Wrappable
 	 *
 	 * @param window
 	 */
-	public final void setWindow(Window window)
+	public final void setWindow(Window<?> window)
 	{
 		if (window == null)
 			throw new IllegalArgumentException("You can't set a null window instance");
@@ -188,7 +188,7 @@ public abstract class Wrappable
 	 *
 	 * @return the window
 	 */
-	public final Window getWindow()
+	public final Window<?> getWindow()
 	{
 		return window;
 	}

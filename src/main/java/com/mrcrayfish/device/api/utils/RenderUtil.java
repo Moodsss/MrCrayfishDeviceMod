@@ -51,10 +51,10 @@ public class RenderUtil
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        buffer.pos(x, y + height, z).tex((double)(u * scale), (double)(v + textureHeight) * scale).endVertex();
+        buffer.pos(x, y + height, z).tex(u * scale, (double)(v + textureHeight) * scale).endVertex();
         buffer.pos(x + width, y + height, z).tex((double)(u + textureWidth) * scale, (double)(v + textureHeight) * scale).endVertex();
-        buffer.pos(x + width, y, z).tex((double)(u + textureWidth) * scale, (double)(v * scale)).endVertex();
-        buffer.pos(x, y, z).tex((double)(u * scale), (double)(v * scale)).endVertex();
+        buffer.pos(x + width, y, z).tex((double)(u + textureWidth) * scale, v * scale).endVertex();
+        buffer.pos(x, y, z).tex(u * scale, v * scale).endVertex();
         tessellator.draw();
     }
 
@@ -77,10 +77,10 @@ public class RenderUtil
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		buffer.pos(x, y + height, 0).tex((double)(u * scaleWidth), (double)(v + textureHeight) * scaleHeight).endVertex();
+		buffer.pos(x, y + height, 0).tex(u * scaleWidth, (double)(v + textureHeight) * scaleHeight).endVertex();
 		buffer.pos(x + width, y + height, 0).tex((double)(u + textureWidth) * scaleWidth, (double)(v + textureHeight) * scaleHeight).endVertex();
-		buffer.pos(x + width, y, 0).tex((double)(u + textureWidth) * scaleWidth, (double)(v * scaleHeight)).endVertex();
-		buffer.pos(x, y, 0).tex((double)(u * scaleWidth), (double)(v * scaleHeight)).endVertex();
+		buffer.pos(x + width, y, 0).tex((double)(u + textureWidth) * scaleWidth, v * scaleHeight).endVertex();
+		buffer.pos(x, y, 0).tex(u * scaleWidth, v * scaleHeight).endVertex();
 		tessellator.draw();
 	}
 
@@ -121,6 +121,6 @@ public class RenderUtil
 
 	public static int color(int color, int defaultColor)
 	{
-		return color != -1 && color > 0 ? color : defaultColor;
+		return color > 0 ? color : defaultColor;
 	}
 }

@@ -1,10 +1,10 @@
 package com.mrcrayfish.device.programs.auction;
 
 import com.mrcrayfish.device.programs.auction.object.AuctionItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -13,11 +13,11 @@ public class AuctionManager
 {
 	public static final AuctionManager INSTANCE = new AuctionManager();
 	
-	private List<AuctionItem> items;
+	private final List<AuctionItem> items;
 	
 	private AuctionManager() 
 	{
-		items = new ArrayList<AuctionItem>();
+		items = new ObjectArrayList<>();
 	}
 	
 	public void addItem(AuctionItem item)
@@ -80,7 +80,7 @@ public class AuctionManager
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		NBTTagList tagList = new NBTTagList();
-		items.stream().filter(i -> i.isValid()).forEach(i -> {
+		items.stream().filter(AuctionItem::isValid).forEach(i -> {
 			NBTTagCompound itemTag = new NBTTagCompound();
 			i.writeToNBT(itemTag);
 			tagList.appendTag(itemTag);

@@ -12,6 +12,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Author: MrCrayfish
@@ -24,7 +25,7 @@ public class RecipeCutPaper extends net.minecraftforge.registries.IForgeRegistry
     }
 
     @Override
-    public boolean matches(InventoryCrafting inv, World worldIn)
+    public boolean matches(InventoryCrafting inv, @NotNull World worldIn)
     {
         ItemStack paper = ItemStack.EMPTY;
         ItemStack shear = ItemStack.EMPTY;
@@ -52,6 +53,7 @@ public class RecipeCutPaper extends net.minecraftforge.registries.IForgeRegistry
     }
 
     @Override
+    @NotNull
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
         ItemStack paper = ItemStack.EMPTY;
@@ -73,25 +75,28 @@ public class RecipeCutPaper extends net.minecraftforge.registries.IForgeRegistry
             ItemStack result = new ItemStack(DeviceBlocks.PAPER);
 
             NBTTagCompound tag = paper.getTagCompound();
-            if(!tag.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+            if(tag != null)
             {
-                return ItemStack.EMPTY;
-            }
+                if(!tag.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+                {
+                    return ItemStack.EMPTY;
+                }
 
-            NBTTagCompound blockTag = tag.getCompoundTag("BlockEntityTag");
-            if(!blockTag.hasKey("print", Constants.NBT.TAG_COMPOUND))
-            {
-                return ItemStack.EMPTY;
-            }
+                NBTTagCompound blockTag = tag.getCompoundTag("BlockEntityTag");
+                if(!blockTag.hasKey("print", Constants.NBT.TAG_COMPOUND))
+                {
+                    return ItemStack.EMPTY;
+                }
 
-            NBTTagCompound printTag = blockTag.getCompoundTag("print");
-            NBTTagCompound data = printTag.getCompoundTag("data");
-            if(!data.hasKey("pixels", Constants.NBT.TAG_INT_ARRAY) || !data.hasKey("resolution", Constants.NBT.TAG_INT))
-            {
-                return ItemStack.EMPTY;
+                NBTTagCompound printTag = blockTag.getCompoundTag("print");
+                NBTTagCompound data = printTag.getCompoundTag("data");
+                if(!data.hasKey("pixels", Constants.NBT.TAG_INT_ARRAY) || !data.hasKey("resolution", Constants.NBT.TAG_INT))
+                {
+                    return ItemStack.EMPTY;
+                }
+                data.setBoolean("cut", true);
+                result.setTagCompound(tag);
             }
-            data.setBoolean("cut", true);
-            result.setTagCompound(tag);
 
             return result;
         }
@@ -106,12 +111,14 @@ public class RecipeCutPaper extends net.minecraftforge.registries.IForgeRegistry
     }
 
     @Override
+    @NotNull
     public ItemStack getRecipeOutput()
     {
         return ItemStack.EMPTY;
     }
 
     @Override
+    @NotNull
     public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
         NonNullList<ItemStack> list = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);

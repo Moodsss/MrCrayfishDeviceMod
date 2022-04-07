@@ -8,6 +8,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -55,7 +56,8 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    @NotNull
+    public NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound)
     {
         super.writeToNBT(compound);
         compound.setString("deviceId", getId().toString());
@@ -68,7 +70,7 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(@NotNull NBTTagCompound compound)
     {
         super.readFromNBT(compound);
         if(compound.hasKey("deviceId", Constants.NBT.TAG_STRING))
@@ -102,7 +104,7 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         private EnumDyeColor color = EnumDyeColor.RED;
 
         @Override
-        public void readFromNBT(NBTTagCompound compound)
+        public void readFromNBT(@NotNull NBTTagCompound compound)
         {
             super.readFromNBT(compound);
             if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
@@ -112,7 +114,7 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         }
 
         @Override
-        public NBTTagCompound writeToNBT(NBTTagCompound compound)
+        public @NotNull NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound)
         {
             super.writeToNBT(compound);
             compound.setByte("color", (byte) color.getMetadata());

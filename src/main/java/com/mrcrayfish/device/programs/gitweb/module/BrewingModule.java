@@ -2,9 +2,9 @@ package com.mrcrayfish.device.programs.gitweb.module;
 
 import com.mrcrayfish.device.programs.gitweb.component.container.BrewingBox;
 import com.mrcrayfish.device.programs.gitweb.component.container.ContainerBox;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +17,7 @@ public class BrewingModule extends ContainerModule
     @Override
     public String[] getOptionalData()
     {
-        List<String> optionalData = new ArrayList<>();
-        optionalData.addAll(Arrays.asList(super.getOptionalData()));
+        List<String> optionalData = new ObjectArrayList<>(Arrays.asList(super.getOptionalData()));
         optionalData.add("slot-fuel");
         optionalData.add("slot-input");
         for(int i = 0; i < 3; i++)
