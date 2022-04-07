@@ -89,10 +89,4 @@ public class TileEntityOfficeChair extends TileEntitySync implements IColored
 
         return this.rotation;
     }
-
-    @SideOnly(Side.CLIENT)
-    protected static float lerp(float delta, float start, float end)
-    {
-        return start + delta * (end - start);
-    }
 }
